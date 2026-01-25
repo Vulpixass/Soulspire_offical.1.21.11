@@ -1,0 +1,17 @@
+{
+  "item.soulspire.soul_token": "Soul Fragment",
+  "item.soulspire.soul_shard": "Soul Shard",
+  "item.soulspire.soul_totem": "Soul Totem",
+  "item.soulspire.soul_jam": "Soul Jam",
+  "item.soulspire.soul_catalyst": "Soul Catalyst",
+  "item.soulspire.soul_amulet": "Soul Amulet",
+
+  "itemgroup.soulspire.soulspire_main_items": "Soulspire",
+
+  "tooltip.soulspirit.soul_amulet.tooltip": "§5§kkhj§5Permanently BAN any Player§kkhj",
+  "tooltip.soulspirit.soul_token.tooltip": "§5A strange Fragment gained through the death of a player by your hands",
+  "tooltip.soulspirit.soul_shard.tooltip": "§5A glowing Shard which pulses with life energy",
+  "tooltip.soulspirit.soul_totem.tooltip": "§5Using the Shards life energy, you can revive a fallen Person",
+  "tooltip.soulspirit.soul_jam.tooltip": "§5A weaker version of the Soul totem that restores 1 life of yourself",
+  "tooltip.soulspirit.soul_catalyst.tooltip": "§5§kkhj§5A powerful Artifact amplified with negative energy§kkhj"
+}
