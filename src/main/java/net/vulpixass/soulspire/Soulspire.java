@@ -3,9 +3,12 @@ package net.vulpixass.soulspire;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.text.Text;
+import net.vulpixass.soulspire.command.LivesCommands;
 import net.vulpixass.soulspire.item.ModItemGroups;
 import net.vulpixass.soulspire.item.ModItems;
+import net.vulpixass.soulspire.network.LivesStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +18,9 @@ public class Soulspire implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+			LivesCommands.register(dispatcher);
+		});
 		ModItems.registerModItems();
 
 		ModItemGroups.registerItemGroups();
@@ -28,5 +34,6 @@ public class Soulspire implements ModInitializer {
 			if (itemStack.isOf(ModItems.SOUL_CATALYST)){list.add(Text.translatable("tooltip.soulspirit.soul_catalyst.tooltip"));}
 
 		});
+		LivesStore.INSTANCE.register();
 	}
 }

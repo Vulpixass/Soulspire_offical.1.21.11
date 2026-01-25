@@ -9,6 +9,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.vulpixass.soulspire.Soulspire;
+import net.vulpixass.soulspire.item.custom.SoulJamItem;
 
 public class ModItems {
     public static final Item SOUL_TOKEN = register("soul_token", s -> new Item(s));
@@ -16,7 +17,7 @@ public class ModItems {
     public static final Item SOUL_AMULET = register("soul_amulet", s -> new Item(s));
     public static final Item SOUL_CATALYST = register("soul_catalyst", s -> new Item(s));
     public static final Item SOUL_TOTEM = register("soul_totem", s -> new Item(s));
-    public static final Item SOUL_JAM = register("soul_jam", s -> new Item(s));
+    public static final Item SOUL_JAM = register("soul_jam", s -> new SoulJamItem(s));
 
     private static <T extends Item> T register(String name, java.util.function.Function<Item.Settings, T> factory) {
         Identifier id = Identifier.of(Soulspire.MOD_ID, name);
