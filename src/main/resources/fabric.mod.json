@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "soulspire",
+	"version": "${version}",
+	"name": "Soulspire",
+	"description": "The offical Soulspirit SMP Mod by Vulpixass",
+	"authors": [
+		"Vulpixass"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/soulspire/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.vulpixass.soulspire.Soulspire"
+		],
+		"fabric-datagen": [
+			"net.vulpixass.soulspire.SoulspireDataGenerator"
+		],
+		"client": [
+			"net.vulpixass.soulspire.SoulspireClient"
+		]
+	},
+	"mixins": [
+		"soulspire.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.18.4",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
