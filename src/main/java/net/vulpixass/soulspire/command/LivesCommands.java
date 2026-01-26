@@ -9,6 +9,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.vulpixass.soulspire.network.LivesStore;
+import net.vulpixass.soulspire.network.PlayerSoulData;
 
 public class LivesCommands {
 
@@ -27,7 +28,12 @@ public class LivesCommands {
                                     ServerPlayerEntity target = net.minecraft.command.argument.EntityArgumentType.getPlayer(ctx, "player");
                                     int amount = IntegerArgumentType.getInteger(ctx, "amount");
 
-                                    LivesStore.get().playerLives.put(target.getUuid(), amount);
+                                    PlayerSoulData data = LivesStore.get().playerLives.get(target.getUuid());
+                                    if (data == null) {
+                                        data = new PlayerSoulData(amount);
+                                        LivesStore.get().playerLives.put(target.getUuid(), data);
+                                    } else {data.lives = amount;}
+
                                     target.sendMessage(Text.literal("Your lives have been set to " + amount), false);
 
                                     source.sendFeedback(() -> Text.literal("Set " + target.getName().getString() + "'s lives to " + amount),true);

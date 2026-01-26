@@ -20,13 +20,13 @@ public class SoulJamItem extends Item {
             UUID uuid = user.getUuid();
             LivesStore lives = LivesStore.get();
 
-            int currentLives = lives.playerLives.get(uuid);
-            if (currentLives != 3) {
+            int currentLives = lives.playerLives.get(uuid).lives;
+            if (currentLives != 3 && !lives.playerLives.get(uuid).hasCatalyst) {
                 lives.addLife(uuid);
                 user.sendMessage(Text.literal("You feel your soul strengthen"), true);
                 return ActionResult.SUCCESS;
             } else {
-                System.out.println("Adding 1 Life to: " + user.getName() + " failed, target already has 3 lives");
+                System.out.println("Adding 1 Life to: " + user.getName() + " failed, target already has 3 lives or has the Soul Catalyst crafted");
                 user.sendMessage(Text.literal("Your Soul is rejecting more life"), true);
                 return ActionResult.FAIL;
             }

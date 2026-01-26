@@ -4,13 +4,21 @@ import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.minecraft.entity.damage.DamageTypes;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.vulpixass.soulspire.command.LivesCommands;
+import net.vulpixass.soulspire.config.LivesConfig;
 import net.vulpixass.soulspire.item.ModItemGroups;
 import net.vulpixass.soulspire.item.ModItems;
 import net.vulpixass.soulspire.network.LivesStore;
+import net.vulpixass.soulspire.network.ReviveInputHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.UUID;
 
 public class Soulspire implements ModInitializer {
 	public static final String MOD_ID = "soulspire";
@@ -22,7 +30,7 @@ public class Soulspire implements ModInitializer {
 			LivesCommands.register(dispatcher);
 		});
 		ModItems.registerModItems();
-
+		ReviveInputHandler.register();
 		ModItemGroups.registerItemGroups();
 
 		ItemTooltipCallback.EVENT.register((itemStack, tooltipContext, tooltipType, list) -> {
@@ -35,5 +43,20 @@ public class Soulspire implements ModInitializer {
 
 		});
 		LivesStore.INSTANCE.register();
+		ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
+			var source = oldPlayer.getRecentDamageSource();
+			if (source != null && source.isOf(DamageTypes.OUT_OF_WORLD)) {ReviveInputHandler.voidDeaths.add(oldPlayer.getUuid());}
+		});
+		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+			UUID id = newPlayer.getUuid();
+
+			if (ReviveInputHandler.voidDeaths.contains(id)) {
+				ReviveInputHandler.voidDeaths.remove(id);
+				newPlayer.getInventory().insertStack(new ItemStack(ModItems.SOUL_CATALYST));
+				newPlayer.sendMessage(Text.literal("§5Your sacrifice has been acknowledged."), false);
+				LivesStore.get().sacrificeSoul(id);
+			}
+		});
+		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {LivesConfig.save(LivesStore.get().playerLives);});
 	}
 }

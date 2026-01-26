@@ -10,13 +10,14 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.vulpixass.soulspire.Soulspire;
 import net.vulpixass.soulspire.item.custom.SoulJamItem;
+import net.vulpixass.soulspire.item.custom.SoulTotemItem;
 
 public class ModItems {
     public static final Item SOUL_TOKEN = register("soul_token", s -> new Item(s));
     public static final Item SOUL_SHARD = register("soul_shard", s -> new Item(s));
     public static final Item SOUL_AMULET = register("soul_amulet", s -> new Item(s));
     public static final Item SOUL_CATALYST = register("soul_catalyst", s -> new Item(s));
-    public static final Item SOUL_TOTEM = register("soul_totem", s -> new Item(s));
+    public static final Item SOUL_TOTEM = register("soul_totem", s -> new SoulTotemItem(s));
     public static final Item SOUL_JAM = register("soul_jam", s -> new SoulJamItem(s));
 
     private static <T extends Item> T register(String name, java.util.function.Function<Item.Settings, T> factory) {
