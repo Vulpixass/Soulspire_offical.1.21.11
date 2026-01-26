@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "T": "soulspire:soul_token"
+  },
+  "pattern": [
+    "T",
+    "T",
+    "T"
+  ],
+  "result": {
+    "count": 1,
+    "id": "soulspire:soul_shard"
+  }
+}

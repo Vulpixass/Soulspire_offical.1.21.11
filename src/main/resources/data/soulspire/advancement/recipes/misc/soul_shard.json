@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_soul_token": {
+      "conditions": {
+        "items": [
+          {
+            "items": "soulspire:soul_token"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "soulspire:soul_shard"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_soul_token"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "soulspire:soul_shard"
+    ]
+  }
+}
