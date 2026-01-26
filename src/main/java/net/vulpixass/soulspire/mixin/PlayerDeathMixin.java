@@ -54,7 +54,8 @@ public abstract class PlayerDeathMixin extends LivingEntity {
 
                 bannedPlayerList.add(new BannedPlayerEntry(victim.getPlayerConfigEntry(), null, "Soul Amulet", null, "Your Soul got Overloaded"));
                 serverVictim.networkHandler.disconnect(Text.literal("Your Soul got Overloaded"));
-                killer.getOffHandStack().decrement(1);
+                if (killer.getMainHandStack().getItem() == ModItems.SOUL_TOTEM) {killer.getMainHandStack().decrement(1);}
+                else if (killer.getOffHandStack().getItem() == ModItems.SOUL_TOTEM) {killer.getOffHandStack().decrement(1);}
             }
             System.out.println(killer.getName() + " killed " + victim.getName());
         }

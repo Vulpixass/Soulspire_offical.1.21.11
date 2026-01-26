@@ -9,6 +9,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.vulpixass.soulspire.item.ModItems;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -44,11 +45,8 @@ public class ReviveInputHandler {
             return;
         }
 
-        LivesStore.get().revive(targetId);
-        sender.getEntityWorld().getServer().getPlayerManager().broadcast(Text.literal("§5§kkhj§5" + typedName + " has risen from the Dead§kkhj"), false);
-        for (ServerPlayerEntity p : sender.getEntityWorld().getServer().getPlayerManager().getPlayerList()) {
-            p.getEntityWorld().playSound(null, p.getX(), p.getY(), p.getZ(), SoundEvents.ENTITY_WITHER_SPAWN, SoundCategory.HOSTILE, 1.0f, 1.0f);
-        }
+        LivesStore.get().revive(targetId, typedName, sender);
+        for (ServerPlayerEntity p : sender.getEntityWorld().getServer().getPlayerManager().getPlayerList()) {p.getEntityWorld().playSound(null, p.getX(), p.getY(), p.getZ(), SoundEvents.ENTITY_WITHER_SPAWN, SoundCategory.HOSTILE, 1.0f, 1.0f);}
         ServerWorld world = target.getEntityWorld();
         LightningEntity lightning = EntityType.LIGHTNING_BOLT.create(world, SpawnReason.TRIGGERED);
         if (lightning != null) {
@@ -56,6 +54,5 @@ public class ReviveInputHandler {
             lightning.setCosmetic(true);
             world.spawnEntity(lightning);
         }
-        sender.getMainHandStack().decrement(1);
     }
 }

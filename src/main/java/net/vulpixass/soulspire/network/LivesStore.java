@@ -4,10 +4,15 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.*;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.world.GameMode;
 import net.vulpixass.soulspire.config.LivesConfig;
+import net.vulpixass.soulspire.item.ModItems;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,6 +24,7 @@ public class LivesStore{
     public static LivesStore INSTANCE = new LivesStore();
     public LivesStore() {this.playerLives.putAll(LivesConfig.load());}
     public void register() {
+
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             UUID uuid = player.getUuid();
             if (LivesStore.get().playerLives.get(uuid).lives == 0) {return ActionResult.FAIL;}
@@ -36,6 +42,8 @@ public class LivesStore{
                     playerLives.put(uuid, new PlayerSoulData(3));
                     LivesConfig.save(playerLives);
                     System.out.println("Added: \"" + uuid + "\" aka: \"" + player.getName() + "\"to the Lives map");
+                    player.getEntityWorld().getServer().getPlayerManager().broadcast(Text.literal("§5" + player.getName().getLiteralString() + " has joined the Realm, may their Soul be with them"), false);
+                    player.getEntityWorld().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1.0f, 1.0f);
                 }
 
                 if (playerLives.get(uuid).lives == 0) {
@@ -74,16 +82,23 @@ public class LivesStore{
         data.lives--;
         LivesConfig.save(playerLives);
     }
-    public void revive(UUID uuid) {
+    public void revive(UUID uuid, String typedName, PlayerEntity sender) {
         PlayerSoulData data = playerLives.get(uuid);
         if (!data.hasUsedRevive && !data.hasCatalyst) {
             data.lives = 3;
             LivesConfig.save(playerLives);
+            sender.getEntityWorld().getServer().getPlayerManager().broadcast(Text.literal("§5§kkhj§5" + typedName + " has risen from the Dead§kkhj"), false);
+            if (sender.getMainHandStack().getItem() == ModItems.SOUL_TOTEM) {sender.getMainHandStack().decrement(1);}
+            else if (sender.getOffHandStack().getItem() == ModItems.SOUL_TOTEM) {sender.getOffHandStack().decrement(1);}
         } else if (!data.hasUsedRevive && data.hasCatalyst) {
             data.lives = 3;
             data.hasUsedRevive = true;
             LivesConfig.save(playerLives);
+            sender.getEntityWorld().getServer().getPlayerManager().broadcast(Text.literal("§5§kkhj§5" + typedName + " has risen from the Dead§kkhj"), false);
+            if (sender.getMainHandStack().getItem() == ModItems.SOUL_TOTEM) {sender.getMainHandStack().decrement(1);}
+            else if (sender.getOffHandStack().getItem() == ModItems.SOUL_TOTEM) {sender.getOffHandStack().decrement(1);}
         } else {
+            sender.getEntityWorld().getServer().getPlayerManager().broadcast(Text.literal("§5§kkhj§5" + typedName + " has failed to return to the World of the living§kkhj"), false);
             System.out.println("Player: " + uuid + " can't be revived");
         }
 

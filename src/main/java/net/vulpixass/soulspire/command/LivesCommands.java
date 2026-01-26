@@ -22,7 +22,7 @@ public class LivesCommands {
                                     ServerCommandSource source = ctx.getSource();
                                     var executor = source.getPlayer();
                                     if (executor == null || !source.getServer().getPlayerManager().isOperator(executor.getPlayerConfigEntry())) {
-                                        source.sendError(Text.literal("You must be an operator to use this command."));
+                                        source.sendError(Text.literal("§cYou must be an operator to use this command."));
                                         return 0;
                                     }
                                     ServerPlayerEntity target = net.minecraft.command.argument.EntityArgumentType.getPlayer(ctx, "player");
@@ -42,5 +42,24 @@ public class LivesCommands {
                                 })
                         ))
         );
+        dispatcher.register(CommandManager.literal("getlives")
+                .then(CommandManager.argument("player", net.minecraft.command.argument.EntityArgumentType.player())
+                        .executes(ctx -> {
+                            ServerCommandSource source = ctx.getSource();
+                            var executor = source.getPlayer();
+                            if (executor == null || !source.getServer().getPlayerManager().isOperator(executor.getPlayerConfigEntry())) {
+                                source.sendError(Text.literal("§cYou must be an operator to use this command."));
+                                return 0;
+                            }
+                            ServerPlayerEntity target = net.minecraft.command.argument.EntityArgumentType.getPlayer(ctx, "player");
+                            PlayerSoulData data = LivesStore.get().playerLives.get(target.getUuid());
+                            if (data != null) {
+                                source.sendFeedback(() -> Text.literal(target.getName().getString() + "'s lives are " + data.lives), true);
+                            } else {
+                                source.sendFeedback(() -> Text.literal("§c" + target.getName().getString() + "'s lives are undefined, please make sure the player has joined the Server"), true);
+                            }
+                            return 1;
+                        })
+                ));
     }
 }

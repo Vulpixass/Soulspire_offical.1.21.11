@@ -8,6 +8,8 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.item.ItemStack;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.vulpixass.soulspire.command.LivesCommands;
 import net.vulpixass.soulspire.config.LivesConfig;
@@ -49,11 +51,11 @@ public class Soulspire implements ModInitializer {
 		});
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
 			UUID id = newPlayer.getUuid();
-
 			if (ReviveInputHandler.voidDeaths.contains(id)) {
 				ReviveInputHandler.voidDeaths.remove(id);
 				newPlayer.getInventory().insertStack(new ItemStack(ModItems.SOUL_CATALYST));
 				newPlayer.sendMessage(Text.literal("§5Your sacrifice has been acknowledged."), false);
+				newPlayer.getEntityWorld().playSound(null, newPlayer.getX(), newPlayer.getY(), newPlayer.getZ(), SoundEvents.ENTITY_ENDER_DRAGON_GROWL, SoundCategory.HOSTILE, 1.0f, 1.0f);
 				LivesStore.get().sacrificeSoul(id);
 			}
 		});
