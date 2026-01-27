@@ -6,8 +6,11 @@ import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -17,6 +20,8 @@ import net.vulpixass.soulspire.item.ModItemGroups;
 import net.vulpixass.soulspire.item.ModItems;
 import net.vulpixass.soulspire.network.LivesStore;
 import net.vulpixass.soulspire.network.ReviveInputHandler;
+import net.vulpixass.soulspire.network.SoulDataC2SPayload;
+import net.vulpixass.soulspire.network.SoulDataS2CPayload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,15 +40,6 @@ public class Soulspire implements ModInitializer {
 		ReviveInputHandler.register();
 		ModItemGroups.registerItemGroups();
 
-		ItemTooltipCallback.EVENT.register((itemStack, tooltipContext, tooltipType, list) -> {
-			if (itemStack.isOf(ModItems.SOUL_AMULET)){list.add(Text.translatable("tooltip.soulspirit.soul_amulet.tooltip"));}
-			if (itemStack.isOf(ModItems.SOUL_TOKEN)){list.add(Text.translatable("tooltip.soulspirit.soul_token.tooltip"));}
-			if (itemStack.isOf(ModItems.SOUL_SHARD)){list.add(Text.translatable("tooltip.soulspirit.soul_shard.tooltip"));}
-			if (itemStack.isOf(ModItems.SOUL_TOTEM)){list.add(Text.translatable("tooltip.soulspirit.soul_totem.tooltip"));}
-			if (itemStack.isOf(ModItems.SOUL_JAM)){list.add(Text.translatable("tooltip.soulspirit.soul_jam.tooltip"));}
-			if (itemStack.isOf(ModItems.SOUL_CATALYST)){list.add(Text.translatable("tooltip.soulspirit.soul_catalyst.tooltip"));}
-
-		});
 		LivesStore.INSTANCE.register();
 		ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
 			var source = oldPlayer.getRecentDamageSource();
@@ -60,5 +56,13 @@ public class Soulspire implements ModInitializer {
 			}
 		});
 		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {LivesConfig.save(LivesStore.get().playerLives);});
+		PayloadTypeRegistry.playC2S().register(SoulDataC2SPayload.ID, SoulDataC2SPayload.CODEC);
+		PayloadTypeRegistry.playS2C().register(SoulDataS2CPayload.ID, SoulDataS2CPayload.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(SoulDataC2SPayload.ID, (payload, context) -> {
+			ServerPlayerEntity player = context.player();
+			int souls = LivesStore.get().outputLives(player.getUuid());
+			context.responseSender().sendPacket(new SoulDataS2CPayload(souls));
+		});
+
 	}
 }

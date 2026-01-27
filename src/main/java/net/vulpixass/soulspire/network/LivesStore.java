@@ -26,12 +26,17 @@ public class LivesStore{
     public void register() {
 
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+            if (world.isClient()) return ActionResult.PASS;
             UUID uuid = player.getUuid();
+            if (!LivesStore.get().playerLives.containsKey(uuid)) return ActionResult.PASS;
             if (LivesStore.get().playerLives.get(uuid).lives == 0) {return ActionResult.FAIL;}
             return ActionResult.PASS;
         });
+
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+            if (world.isClient()) return ActionResult.PASS;
             UUID uuid = player.getUuid();
+            if (!LivesStore.get().playerLives.containsKey(uuid)) return ActionResult.PASS;
             if (LivesStore.get().playerLives.get(uuid).lives == 0) {return ActionResult.FAIL;}
             return ActionResult.PASS;
         });
@@ -45,6 +50,7 @@ public class LivesStore{
                     player.getEntityWorld().getServer().getPlayerManager().broadcast(Text.literal("§5" + player.getName().getLiteralString() + " has joined the Realm, may their Soul be with them"), false);
                     player.getEntityWorld().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 1.0f, 1.0f);
                 }
+                if (!playerLives.containsKey(uuid)) continue;
 
                 if (playerLives.get(uuid).lives == 0) {
                     if (!player.isAlive()) continue;
@@ -73,17 +79,19 @@ public class LivesStore{
     }
     public void addLife(UUID uuid) {
         PlayerSoulData data = playerLives.get(uuid);
+        if (data == null) return; // ADDED
         data.lives++;
         LivesConfig.save(playerLives);
-
     }
     public void removeLife(UUID uuid) {
         PlayerSoulData data = playerLives.get(uuid);
+        if (data == null) return; // ADDED
         data.lives--;
         LivesConfig.save(playerLives);
     }
     public void revive(UUID uuid, String typedName, PlayerEntity sender) {
         PlayerSoulData data = playerLives.get(uuid);
+        if (data == null) return; // ADDED
         if (!data.hasUsedRevive && !data.hasCatalyst) {
             data.lives = 3;
             LivesConfig.save(playerLives);
@@ -107,6 +115,7 @@ public class LivesStore{
         return playerLives.get(uuid).lives;
     }
     public void sacrificeSoul(UUID uuid) {
+        if (!playerLives.containsKey(uuid)) return; // ADDED
         playerLives.get(uuid).hasCatalyst = true;
         LivesConfig.save(playerLives);
     }

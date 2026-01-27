@@ -1,63 +1,70 @@
 package net.vulpixass.soulspire.mixin;
 
-import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.BannedPlayerEntry;
 import net.minecraft.server.BannedPlayerList;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
 import net.vulpixass.soulspire.item.ModItems;
 import net.vulpixass.soulspire.network.LivesStore;
-import org.jspecify.annotations.Nullable;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(PlayerEntity.class)
-public abstract class PlayerDeathMixin extends LivingEntity {
-
-    @Shadow public abstract void playSound(SoundEvent sound, float volume, float pitch);
-
-    protected PlayerDeathMixin(EntityType<? extends LivingEntity> type, World world) {super(type, world);}
+// 1. Target ServerPlayerEntity instead of LivingEntity
+@Mixin(ServerPlayerEntity.class)
+public abstract class PlayerDeathMixin {
 
     @Inject(method = "onDeath", at = @At("HEAD"))
     private void onDeath(DamageSource damageSource, CallbackInfo ci) {
+        // Cast 'this' to ServerPlayerEntity safely
+        ServerPlayerEntity victim = (ServerPlayerEntity) (Object) this;
+        ServerWorld serverWorld = victim.getEntityWorld().toServerWorld();
+        // Ensure we are on the server
+        if (victim.getEntityWorld().isClient()) return;
+
+        // Check if killed by a player
         if (damageSource.getAttacker() instanceof PlayerEntity killer) {
-            PlayerEntity victim = (PlayerEntity) (Object) this;
-            ServerPlayerEntity serverVictim = (ServerPlayerEntity)(Object)this;
-            ServerWorld serverWorld = serverVictim.getEntityWorld().toServerWorld();
+
+            // Remove life
             LivesStore.get().removeLife(victim.getUuid());
-            if (killer.getOffHandStack().isOf(ModItems.SOUL_AMULET) || killer.getMainHandStack().isOf(ModItems.SOUL_AMULET)) {
-                MinecraftServer server = killer.getEntityWorld().getServer();
-                BannedPlayerList bannedPlayerList = killer.getEntityWorld().getServer().getPlayerManager().getUserBanList();
-                serverWorld.playSound(null, serverVictim.getX(), serverVictim.getY(), serverVictim.getZ(), SoundEvents.ENTITY_WITHER_SPAWN, SoundCategory.PLAYERS, 1.0f, 1.0f);
-                serverWorld.playSound(null, serverVictim.getX(), serverVictim.getY(), serverVictim.getZ(), SoundEvents.ENTITY_LIGHTNING_BOLT_IMPACT, SoundCategory.PLAYERS, 1.0f, 1.0f);
-                serverWorld.playSound(null, serverVictim.getX(), serverVictim.getY(), serverVictim.getZ(), SoundEvents.BLOCK_BEACON_DEACTIVATE, SoundCategory.PLAYERS, 1.0f, 1.0f);
-                serverWorld.createExplosion(null, serverVictim.getX(), serverVictim.getY(), serverVictim.getZ(), 8.0f, World.ExplosionSourceType.TNT);
+            victim.getEntityWorld().playSound(null, victim.getX(), victim.getY(), victim.getZ(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.MASTER, 1.0f, 1.0f);
+            System.out.println("PlayerDeathMixin fired for: " + victim.getName().getString());
+
+            // Check for Amulet in either hand
+            if (killer.getOffHandStack().isOf(ModItems.SOUL_AMULET) ||
+                    killer.getMainHandStack().isOf(ModItems.SOUL_AMULET)) {
+
+                BannedPlayerList bannedPlayerList = serverWorld.getServer().getPlayerManager().getUserBanList();
+
+                // Play Effects
+                serverWorld.playSound(null, victim.getX(), victim.getY(), victim.getZ(), SoundEvents.ENTITY_WITHER_SPAWN, SoundCategory.PLAYERS, 1.0f, 1.0f);
+                serverWorld.playSound(null, victim.getX(), victim.getY(), victim.getZ(), SoundEvents.ENTITY_LIGHTNING_BOLT_IMPACT, SoundCategory.PLAYERS, 1.0f, 1.0f);
+                serverWorld.createExplosion(null, victim.getX(), victim.getY(), victim.getZ(), 8.0f, World.ExplosionSourceType.TNT);
 
                 LightningEntity lightning = new LightningEntity(EntityType.LIGHTNING_BOLT, serverWorld);
-                lightning.refreshPositionAndAngles(serverVictim.getX(), serverVictim.getY(), serverVictim.getZ(), 0.0f,0.0f);
+                lightning.refreshPositionAndAngles(victim.getX(), victim.getY(), victim.getZ(), 0.0f, 0.0f);
                 serverWorld.spawnEntity(lightning);
 
+                // Ban and Disconnect
                 bannedPlayerList.add(new BannedPlayerEntry(victim.getPlayerConfigEntry(), null, "Soul Amulet", null, "Your Soul got Overloaded"));
-                serverVictim.networkHandler.disconnect(Text.literal("Your Soul got Overloaded"));
-                if (killer.getMainHandStack().getItem() == ModItems.SOUL_TOTEM) {killer.getMainHandStack().decrement(1);}
-                else if (killer.getOffHandStack().getItem() == ModItems.SOUL_TOTEM) {killer.getOffHandStack().decrement(1);}
+                victim.networkHandler.disconnect(Text.literal("$5$kkhj§5Your Soul got Overloaded§kkhj"));
+
+                // Consume Totem
+                if (killer.getMainHandStack().isOf(ModItems.SOUL_TOTEM)) {
+                    killer.getMainHandStack().decrement(1);
+                } else if (killer.getOffHandStack().isOf(ModItems.SOUL_TOTEM)) {
+                    killer.getOffHandStack().decrement(1);
+                }
             }
-            System.out.println(killer.getName() + " killed " + victim.getName());
         }
     }
 }
