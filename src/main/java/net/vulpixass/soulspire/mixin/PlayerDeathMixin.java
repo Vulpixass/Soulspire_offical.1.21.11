@@ -1,9 +1,12 @@
 package net.vulpixass.soulspire.mixin;
 
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LightningEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.BannedPlayerEntry;
 import net.minecraft.server.BannedPlayerList;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -14,6 +17,7 @@ import net.minecraft.text.Text;
 import net.minecraft.world.World;
 import net.vulpixass.soulspire.item.ModItems;
 import net.vulpixass.soulspire.network.LivesStore;
+import net.vulpixass.soulspire.network.SoulDataS2CPayload;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -37,6 +41,8 @@ public abstract class PlayerDeathMixin {
             // Remove life
             LivesStore.get().removeLife(victim.getUuid());
             victim.getEntityWorld().playSound(null, victim.getX(), victim.getY(), victim.getZ(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.MASTER, 1.0f, 1.0f);
+            int updated = LivesStore.get().outputLives(victim.getUuid());
+            ServerPlayNetworking.send(victim, new SoulDataS2CPayload(updated));
             System.out.println("PlayerDeathMixin fired for: " + victim.getName().getString());
 
             // Check for Amulet in either hand
@@ -56,14 +62,17 @@ public abstract class PlayerDeathMixin {
 
                 // Ban and Disconnect
                 bannedPlayerList.add(new BannedPlayerEntry(victim.getPlayerConfigEntry(), null, "Soul Amulet", null, "Your Soul got Overloaded"));
-                victim.networkHandler.disconnect(Text.literal("$5$kkhj§5Your Soul got Overloaded§kkhj"));
+                victim.networkHandler.disconnect(Text.literal("§5§kkhj§5Your Soul got Overloaded§kkhj"));
 
                 // Consume Totem
-                if (killer.getMainHandStack().isOf(ModItems.SOUL_TOTEM)) {
+                if (killer.getMainHandStack().isOf(ModItems.SOUL_AMULET)) {
                     killer.getMainHandStack().decrement(1);
-                } else if (killer.getOffHandStack().isOf(ModItems.SOUL_TOTEM)) {
+                } else if (killer.getOffHandStack().isOf(ModItems.SOUL_AMULET)) {
                     killer.getOffHandStack().decrement(1);
                 }
+            } else {
+                ItemEntity soulfragment = new ItemEntity(serverWorld, victim.getX(), victim.getY() + 0.5, victim.getZ(), new ItemStack(ModItems.SOUL_TOKEN));
+                serverWorld.spawnEntity(soulfragment);
             }
         }
     }

@@ -1,7 +1,9 @@
 package net.vulpixass.soulspire.item.custom;
 
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -10,6 +12,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import net.vulpixass.soulspire.item.ModItems;
 import net.vulpixass.soulspire.network.LivesStore;
+import net.vulpixass.soulspire.network.SoulDataS2CPayload;
 
 import java.util.UUID;
 
@@ -28,6 +31,8 @@ public class SoulJamItem extends Item {
                 lives.addLife(uuid);
                 user.sendMessage(Text.literal("You feel your soul strengthen"), true);
                 user.getEntityWorld().playSound(null, user.getX(), user.getY(), user.getZ(), SoundEvents.ENTITY_WARDEN_HEARTBEAT, SoundCategory.HOSTILE, 1.0f, 1.0f);
+                int updated = LivesStore.get().outputLives(user.getUuid());
+                ServerPlayNetworking.send((ServerPlayerEntity) user, new SoulDataS2CPayload(updated));
                 if (user.getMainHandStack().getItem() == ModItems.SOUL_JAM) {user.getMainHandStack().decrement(1);}
                 else if (user.getOffHandStack().getItem() == ModItems.SOUL_JAM) {user.getOffHandStack().decrement(1);}
                 return ActionResult.SUCCESS;

@@ -2,10 +2,12 @@ package net.vulpixass.soulspire;
 
 import net.fabricmc.api.ModInitializer;
 
+import net.vulpixass.soulspire.network.CombatTracker;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.damage.DamageTypes;
@@ -27,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
+
 public class Soulspire implements ModInitializer {
 	public static final String MOD_ID = "soulspire";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
@@ -36,18 +39,20 @@ public class Soulspire implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			LivesCommands.register(dispatcher);
 		});
+
 		ModItems.registerModItems();
 		ReviveInputHandler.register();
 		ModItemGroups.registerItemGroups();
-
+		CombatTracker.register();
 		LivesStore.INSTANCE.register();
+
 		ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
 			var source = oldPlayer.getRecentDamageSource();
 			if (source != null && source.isOf(DamageTypes.OUT_OF_WORLD)) {ReviveInputHandler.voidDeaths.add(oldPlayer.getUuid());}
 		});
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
 			UUID id = newPlayer.getUuid();
-			if (ReviveInputHandler.voidDeaths.contains(id)) {
+			if (ReviveInputHandler.voidDeaths.contains(id) && LivesStore.get().playerLives.get(oldPlayer.getUuid()).hasCatalyst != true) {
 				ReviveInputHandler.voidDeaths.remove(id);
 				newPlayer.getInventory().insertStack(new ItemStack(ModItems.SOUL_CATALYST));
 				newPlayer.sendMessage(Text.literal("§5Your sacrifice has been acknowledged."), false);
@@ -63,6 +68,5 @@ public class Soulspire implements ModInitializer {
 			int souls = LivesStore.get().outputLives(player.getUuid());
 			context.responseSender().sendPacket(new SoulDataS2CPayload(souls));
 		});
-
 	}
 }

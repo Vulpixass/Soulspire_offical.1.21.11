@@ -1,0 +1,76 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ancient_debris": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:ancient_debris"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_diamond_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:diamond_block"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_redstone_block": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:redstone_block"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_soul_shard": {
+      "conditions": {
+        "items": [
+          {
+            "items": "soulspire:soul_shard"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "soulspire:soul_totem"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_totem_of_undying": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:totem_of_undying"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_totem_of_undying",
+      "has_ancient_debris",
+      "has_diamond_block",
+      "has_redstone_block",
+      "has_soul_shard"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "soulspire:soul_totem"
+    ]
+  }
+}

@@ -2,6 +2,7 @@ package net.vulpixass.soulspire;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.text.Text;
 import net.vulpixass.soulspire.client.SoulHudRenderer;
@@ -23,15 +24,15 @@ public class SoulspireClient implements ClientModInitializer {
             if (itemStack.isOf(ModItems.SOUL_CATALYST)){list.add(Text.translatable("tooltip.soulspirit.soul_catalyst.tooltip"));}
         });
         SoulHudRenderer.register();
-        // Inside your onInitializeClient()
         ClientPlayNetworking.registerGlobalReceiver(SoulDataS2CPayload.ID, (payload, context) -> {
             context.client().execute(() -> {
                 clientSoulCount = payload.souls();
             });
         });
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            SoulspireClient.sendRequest();
+        });
     }
-
-    // Call this whenever you need to refresh data (e.g., when opening the HUD)
     public static void sendRequest() {
         ClientPlayNetworking.send(new SoulDataC2SPayload());
     }

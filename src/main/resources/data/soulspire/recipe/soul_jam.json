@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "D": "minecraft:diamond_block",
+    "R": "minecraft:redstone",
+    "T": "soulspire:soul_token",
+    "X": "minecraft:experience_bottle"
+  },
+  "pattern": [
+    " T ",
+    "DXD",
+    " R "
+  ],
+  "result": {
+    "count": 1,
+    "id": "soulspire:soul_jam"
+  }
+}

@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines; // Ensure it's .render, not .gl
 import net.minecraft.util.Identifier;
+import net.vulpixass.soulspire.SoulspireClient;
 import net.vulpixass.soulspire.network.LivesStore;
 
 import java.util.UUID;
@@ -30,26 +31,28 @@ public class SoulHudRenderer { // Removed "extends RenderPipelines"
 
             // Use a loop to draw exactly the number of lives the server sent
             // Example logic for your 3-heart triangle layout:
-            int lives = LivesStore.get().outputLives(client.player.getUuid());
-            if (lives == 0) {
-                drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_DEAD, x, y, 0f, 0f, 16, 16, 16, 16);
-                drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_DEAD, x + 17, y, 0f, 0f, 16, 16, 16, 16);
-                drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_DEAD, x + 9, y - 8, 0f, 0f, 16, 16, 16, 16);
-            }
-            if (lives == 1) {
-                drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_ALIVE, x, y, 0f, 0f, 16, 16, 16, 16);
-                drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_DEAD, x + 17, y, 0f, 0f, 16, 16, 16, 16);
-                drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_DEAD, x + 9, y - 8, 0f, 0f, 16, 16, 16, 16);
-            }
-            if (lives == 2) {
-                drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_ALIVE, x, y, 0f, 0f, 16, 16, 16, 16);
-                drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_ALIVE, x + 17, y, 0f, 0f, 16, 16, 16, 16);
-                drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_DEAD, x + 9, y - 8, 0f, 0f, 16, 16, 16, 16);
-            }
-            if (lives == 3) {
-                drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_ALIVE, x + 9, y - 8, 0f, 0f, 16, 16, 16, 16);
-                drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_ALIVE, x + 17, y, 0f, 0f, 16, 16, 16, 16);
-                drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_ALIVE, x, y, 0f, 0f, 16, 16, 16, 16);
+            int lives = SoulspireClient.clientSoulCount;
+            if (!client.player.isCreative()) {
+                if (lives == 0) {
+                    drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_DEAD, x, y, 0f, 0f, 16, 16, 16, 16);
+                    drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_DEAD, x + 17, y, 0f, 0f, 16, 16, 16, 16);
+                    drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_DEAD, x + 9, y - 8, 0f, 0f, 16, 16, 16, 16);
+                }
+                if (lives == 1) {
+                    drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_ALIVE, x, y, 0f, 0f, 16, 16, 16, 16);
+                    drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_DEAD, x + 17, y, 0f, 0f, 16, 16, 16, 16);
+                    drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_DEAD, x + 9, y - 8, 0f, 0f, 16, 16, 16, 16);
+                }
+                if (lives == 2) {
+                    drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_ALIVE, x, y, 0f, 0f, 16, 16, 16, 16);
+                    drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_ALIVE, x + 17, y, 0f, 0f, 16, 16, 16, 16);
+                    drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_DEAD, x + 9, y - 8, 0f, 0f, 16, 16, 16, 16);
+                }
+                if (lives == 3) {
+                    drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_ALIVE, x + 9, y - 8, 0f, 0f, 16, 16, 16, 16);
+                    drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_ALIVE, x + 17, y, 0f, 0f, 16, 16, 16, 16);
+                    drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_ALIVE, x, y, 0f, 0f, 16, 16, 16, 16);
+                }
             }
         });
     }

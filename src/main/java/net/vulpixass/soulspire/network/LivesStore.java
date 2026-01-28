@@ -114,6 +114,7 @@ public class LivesStore{
     public int outputLives(UUID uuid) {
         return playerLives.get(uuid).lives;
     }
+    public boolean outputHasCatalyst(UUID uuid) {return playerLives.get(uuid).hasCatalyst;}
     public void sacrificeSoul(UUID uuid) {
         if (!playerLives.containsKey(uuid)) return; // ADDED
         playerLives.get(uuid).hasCatalyst = true;
