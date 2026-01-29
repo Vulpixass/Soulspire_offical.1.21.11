@@ -37,15 +37,9 @@ public abstract class PlayerDeathMixin {
 
         // Check if killed by a player
         if (damageSource.getAttacker() instanceof PlayerEntity killer) {
-
-            // Remove life
-            LivesStore.get().removeLife(victim.getUuid());
             victim.getEntityWorld().playSound(null, victim.getX(), victim.getY(), victim.getZ(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.MASTER, 1.0f, 1.0f);
-            int updated = LivesStore.get().outputLives(victim.getUuid());
-            ServerPlayNetworking.send(victim, new SoulDataS2CPayload(updated));
             System.out.println("PlayerDeathMixin fired for: " + victim.getName().getString());
 
-            // Check for Amulet in either hand
             if (killer.getOffHandStack().isOf(ModItems.SOUL_AMULET) ||
                     killer.getMainHandStack().isOf(ModItems.SOUL_AMULET)) {
 
