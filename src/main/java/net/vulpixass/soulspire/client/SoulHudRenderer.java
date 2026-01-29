@@ -32,7 +32,7 @@ public class SoulHudRenderer { // Removed "extends RenderPipelines"
             // Use a loop to draw exactly the number of lives the server sent
             // Example logic for your 3-heart triangle layout:
             int lives = SoulspireClient.clientSoulCount;
-            if (!client.player.isCreative()) {
+            if (!client.player.isSpectator() && !client.player.isCreative()) {
                 if (lives == 0) {
                     drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_DEAD, x, y, 0f, 0f, 16, 16, 16, 16);
                     drawContext.drawTexture(RenderPipelines.GUI_TEXTURED, LIFE_DEAD, x + 17, y, 0f, 0f, 16, 16, 16, 16);

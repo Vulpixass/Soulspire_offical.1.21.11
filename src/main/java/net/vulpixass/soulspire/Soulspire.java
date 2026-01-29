@@ -2,6 +2,7 @@ package net.vulpixass.soulspire;
 
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.vulpixass.soulspire.network.CombatTracker;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -67,6 +68,10 @@ public class Soulspire implements ModInitializer {
 			ServerPlayerEntity player = context.player();
 			int souls = LivesStore.get().outputLives(player.getUuid());
 			context.responseSender().sendPacket(new SoulDataS2CPayload(souls));
+		});
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+			ServerPlayerEntity player = handler.getPlayer();
+			LivesStore.get().updatePlayerDisplayName(player);
 		});
 	}
 }

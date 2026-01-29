@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -47,6 +48,9 @@ public class ReviveInputHandler {
         }
 
         LivesStore.get().revive(targetId, typedName, sender);
+        LivesStore.get().updatePlayerDisplayName(target);
+        target.getEntityWorld().getServer().getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, target));
+
         int updated = LivesStore.get().outputLives(targetId);
         ServerPlayNetworking.send(target, new SoulDataS2CPayload(updated));
 

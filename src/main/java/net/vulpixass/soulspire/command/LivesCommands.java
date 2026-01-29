@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.permission.Permissions;
+import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -35,7 +36,11 @@ public class LivesCommands {
                                     if (data == null) {
                                         data = new PlayerSoulData(amount);
                                         LivesStore.get().playerLives.put(target.getUuid(), data);
-                                    } else {data.lives = amount;}
+                                    } else {
+                                        data.lives = amount;
+                                        LivesStore.get().updatePlayerDisplayName(target);
+                                        target.getEntityWorld().getServer().getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, target));
+                                    }
 
                                     target.sendMessage(Text.literal("Your lives have been set to " + amount), false);
                                     source.sendFeedback(() -> Text.literal("Set " + target.getName().getString() + "'s lives to " + amount),true);

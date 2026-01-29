@@ -3,6 +3,7 @@ package net.vulpixass.soulspire.item.custom;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -29,6 +30,8 @@ public class SoulJamItem extends Item {
             int currentLives = lives.playerLives.get(uuid).lives;
             if (currentLives != 3 && !lives.playerLives.get(uuid).hasCatalyst) {
                 lives.addLife(uuid);
+                lives.updatePlayerDisplayName((ServerPlayerEntity) user);
+                user.getEntityWorld().getServer().getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, (ServerPlayerEntity) user));
                 user.sendMessage(Text.literal("You feel your soul strengthen"), true);
                 user.getEntityWorld().playSound(null, user.getX(), user.getY(), user.getZ(), SoundEvents.ENTITY_WARDEN_HEARTBEAT, SoundCategory.HOSTILE, 1.0f, 1.0f);
                 int updated = LivesStore.get().outputLives(user.getUuid());

@@ -13,6 +13,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.world.GameMode;
 import net.vulpixass.soulspire.config.LivesConfig;
 import net.vulpixass.soulspire.item.ModItems;
+import org.apache.logging.log4j.core.jmx.Server;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -119,5 +120,12 @@ public class LivesStore{
         if (!playerLives.containsKey(uuid)) return; // ADDED
         playerLives.get(uuid).hasCatalyst = true;
         LivesConfig.save(playerLives);
+    }
+    public void updatePlayerDisplayName(ServerPlayerEntity player) {
+        Text name = player.getName();
+        int lives = LivesStore.get().outputLives(player.getUuid());
+        Text formattedName = Text.of(name + "§5[" + lives + "]");
+        player.setCustomName(formattedName);
+        player.setCustomNameVisible(true);
     }
 }

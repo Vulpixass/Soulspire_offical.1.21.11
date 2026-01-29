@@ -5,7 +5,8 @@
 	"mixins": [
 		"ExampleMixin",
 		"PlayerPickupItemsMixin",
-		"PlayerDeathMixin"
+		"PlayerDeathMixin",
+		"PlayerNameMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

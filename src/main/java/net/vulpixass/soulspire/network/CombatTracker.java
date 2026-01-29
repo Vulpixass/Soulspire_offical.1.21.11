@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -61,7 +62,8 @@ public class CombatTracker {
             if (data != null) {
                 // victim died while in combat -> treat as PvP death
                 LivesStore.get().removeLife(id);
-
+                LivesStore.get().updatePlayerDisplayName(victim);
+                victim.getEntityWorld().getServer().getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, victim));
                 if (!data.attacker.getOffHandStack().isOf(ModItems.SOUL_AMULET) && !data.attacker.getMainHandStack().isOf(ModItems.SOUL_AMULET)) {
                     victim.getEntityWorld().playSound(null, victim.getX(), victim.getY(), victim.getZ(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.MASTER, 1.0f, 1.0f);
                     ItemEntity soulfragment = new ItemEntity(victim.getEntityWorld().toServerWorld(), victim.getX(), victim.getY() + 0.5, victim.getZ(), new ItemStack(ModItems.SOUL_FRAGMENT));
