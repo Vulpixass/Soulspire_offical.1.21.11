@@ -64,9 +64,6 @@ public abstract class PlayerDeathMixin {
                 } else if (killer.getOffHandStack().isOf(ModItems.SOUL_AMULET)) {
                     killer.getOffHandStack().decrement(1);
                 }
-            } else {
-                ItemEntity soulfragment = new ItemEntity(serverWorld, victim.getX(), victim.getY() + 0.5, victim.getZ(), new ItemStack(ModItems.SOUL_FRAGMENT));
-                serverWorld.spawnEntity(soulfragment);
             }
         }
     }
