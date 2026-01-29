@@ -31,11 +31,11 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "has_soul_token": {
+    "has_soul_fragment": {
       "conditions": {
         "items": [
           {
-            "items": "soulspire:soul_token"
+            "items": "soulspire:soul_fragment"
           }
         ]
       },
@@ -51,7 +51,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_soul_token",
+      "has_soul_fragment",
       "has_diamond_block",
       "has_experience_bottle",
       "has_redstone"

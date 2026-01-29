@@ -4,7 +4,7 @@
   "key": {
     "D": "minecraft:diamond_block",
     "R": "minecraft:redstone",
-    "T": "soulspire:soul_token",
+    "T": "soulspire:soul_fragment",
     "X": "minecraft:experience_bottle"
   },
   "pattern": [

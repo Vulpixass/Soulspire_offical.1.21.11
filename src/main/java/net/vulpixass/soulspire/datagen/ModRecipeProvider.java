@@ -53,11 +53,11 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 RegistryWrapper.Impl<Item> itemLookup = registries.getOrThrow(RegistryKeys.ITEM);
 
                 shapedRecipe(exporter, RecipeCategory.MISC, ModItems.SOUL_SHARD, 1, new String[]{"  T", " T ", "T  "},
-                        java.util.Map.of('T', ModItems.SOUL_TOKEN));
+                        java.util.Map.of('T', ModItems.SOUL_FRAGMENT));
                 shapedRecipe(exporter, RecipeCategory.COMBAT, ModItems.SOUL_TOTEM, 1, new String[]{"ASA", "RTR", "ADA"},
                         java.util.Map.of('S', ModItems.SOUL_SHARD, 'T', Items.TOTEM_OF_UNDYING, 'A', Items.ANCIENT_DEBRIS, 'R', Items.REDSTONE_BLOCK, 'D' ,Items.DIAMOND_BLOCK));
                 shapedRecipe(exporter, RecipeCategory.COMBAT, ModItems.SOUL_JAM, 1, new String[]{" T ", "DXD", " R "},
-                        java.util.Map.of('T', ModItems.SOUL_TOKEN, 'D', Items.DIAMOND_BLOCK, 'X', Items.EXPERIENCE_BOTTLE, 'R', Items.REDSTONE));
+                        java.util.Map.of('T', ModItems.SOUL_FRAGMENT, 'D', Items.DIAMOND_BLOCK, 'X', Items.EXPERIENCE_BOTTLE, 'R', Items.REDSTONE));
                 shapedRecipe(exporter, RecipeCategory.COMBAT, ModItems.SOUL_AMULET, 1, new String[]{"ESE", "NCN", "EWE"},
                         java.util.Map.of('S', ModItems.SOUL_SHARD, 'C', ModItems.SOUL_CATALYST, 'N', Items.NETHERITE_INGOT, 'W', Items.WITHER_SKELETON_SKULL, 'E', Items.ELYTRA));
             }

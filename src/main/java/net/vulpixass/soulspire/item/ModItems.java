@@ -13,7 +13,7 @@ import net.vulpixass.soulspire.item.custom.SoulJamItem;
 import net.vulpixass.soulspire.item.custom.SoulTotemItem;
 
 public class ModItems {
-    public static final Item SOUL_TOKEN = register("soul_token", s -> new Item(s));
+    public static final Item SOUL_FRAGMENT = register("soul_fragment", s -> new Item(s));
     public static final Item SOUL_SHARD = register("soul_shard", s -> new Item(s.maxCount(16)));
     public static final Item SOUL_AMULET = register("soul_amulet", s -> new Item(s.maxCount(1)));
     public static final Item SOUL_CATALYST = register("soul_catalyst", s -> new Item(s.maxCount(1)));
@@ -29,7 +29,7 @@ public class ModItems {
     public static void registerModItems() {
         Soulspire.LOGGER.info("Registering Mod Items for " + Soulspire.MOD_ID);
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT).register(fabricItemGroupEntries -> {
-            fabricItemGroupEntries.add(SOUL_TOKEN);
+            fabricItemGroupEntries.add(SOUL_FRAGMENT);
             fabricItemGroupEntries.add(SOUL_SHARD);
             fabricItemGroupEntries.add(SOUL_AMULET);
             fabricItemGroupEntries.add(SOUL_CATALYST);

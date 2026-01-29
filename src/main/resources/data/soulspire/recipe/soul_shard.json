@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "T": "soulspire:soul_token"
+    "T": "soulspire:soul_fragment"
   },
   "pattern": [
     "  T",

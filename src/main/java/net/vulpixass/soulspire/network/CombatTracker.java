@@ -64,7 +64,7 @@ public class CombatTracker {
 
                 if (!data.attacker.getOffHandStack().isOf(ModItems.SOUL_AMULET) && !data.attacker.getMainHandStack().isOf(ModItems.SOUL_AMULET)) {
                     victim.getEntityWorld().playSound(null, victim.getX(), victim.getY(), victim.getZ(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.MASTER, 1.0f, 1.0f);
-                    ItemEntity soulfragment = new ItemEntity(victim.getEntityWorld().toServerWorld(), victim.getX(), victim.getY() + 0.5, victim.getZ(), new ItemStack(ModItems.SOUL_TOKEN));
+                    ItemEntity soulfragment = new ItemEntity(victim.getEntityWorld().toServerWorld(), victim.getX(), victim.getY() + 0.5, victim.getZ(), new ItemStack(ModItems.SOUL_FRAGMENT));
                     victim.getEntityWorld().toServerWorld().spawnEntity(soulfragment);
                     System.out.println("CombatTracker PvP death for: " + victim.getName().getString());
                 }

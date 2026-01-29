@@ -71,7 +71,7 @@ public abstract class PlayerDeathMixin {
                     killer.getOffHandStack().decrement(1);
                 }
             } else {
-                ItemEntity soulfragment = new ItemEntity(serverWorld, victim.getX(), victim.getY() + 0.5, victim.getZ(), new ItemStack(ModItems.SOUL_TOKEN));
+                ItemEntity soulfragment = new ItemEntity(serverWorld, victim.getX(), victim.getY() + 0.5, victim.getZ(), new ItemStack(ModItems.SOUL_FRAGMENT));
                 serverWorld.spawnEntity(soulfragment);
             }
         }

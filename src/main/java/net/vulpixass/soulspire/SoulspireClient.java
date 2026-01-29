@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.text.Text;
 import net.vulpixass.soulspire.client.SoulHudRenderer;
 import net.vulpixass.soulspire.item.ModItems;
-import net.vulpixass.soulspire.network.LivesStore;
 import net.vulpixass.soulspire.network.SoulDataC2SPayload;
 import net.vulpixass.soulspire.network.SoulDataS2CPayload;
 
@@ -17,7 +16,7 @@ public class SoulspireClient implements ClientModInitializer {
     public void onInitializeClient() {
         ItemTooltipCallback.EVENT.register((itemStack, tooltipContext, tooltipType, list) -> {
             if (itemStack.isOf(ModItems.SOUL_AMULET)){list.add(Text.translatable("tooltip.soulspirit.soul_amulet.tooltip"));}
-            if (itemStack.isOf(ModItems.SOUL_TOKEN)){list.add(Text.translatable("tooltip.soulspirit.soul_token.tooltip"));}
+            if (itemStack.isOf(ModItems.SOUL_FRAGMENT)){list.add(Text.translatable("tooltip.soulspirit.soul_fragment.tooltip"));}
             if (itemStack.isOf(ModItems.SOUL_SHARD)){list.add(Text.translatable("tooltip.soulspirit.soul_shard.tooltip"));}
             if (itemStack.isOf(ModItems.SOUL_TOTEM)){list.add(Text.translatable("tooltip.soulspirit.soul_totem.tooltip"));}
             if (itemStack.isOf(ModItems.SOUL_JAM)){list.add(Text.translatable("tooltip.soulspirit.soul_jam.tooltip"));}

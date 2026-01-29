@@ -1,5 +1,5 @@
 {
-  "item.soulspire.soul_token": "Seelenfragment",
+  "item.soulspire.soul_fragment": "Seelenfragment",
   "item.soulspire.soul_shard": "Seelensplitter",
   "item.soulspire.soul_totem": "Seelentotem",
   "item.soulspire.soul_jam": "Seelensaft",
@@ -9,7 +9,7 @@
   "itemgroup.soulspire.soulspire_main_items": "Soulspire",
 
   "tooltip.soulspirit.soul_amulet.tooltip": "§5§kkhj§5Verbanne einen Spieler PERMANENT§kkhj",
-  "tooltip.soulspirit.soul_token.tooltip": "§5Ein seltsames Fragment, erhalten durch das töten eines Spielers mit deinen eigenen Händen",
+  "tooltip.soulspirit.soul_fragment.tooltip": "§5Ein seltsames Fragment, erhalten durch das töten eines Spielers mit deinen eigenen Händen",
   "tooltip.soulspirit.soul_shard.tooltip": "§5Ein leuchtender Splitter, der mit Lebensenergie pulsiert",
   "tooltip.soulspirit.soul_totem.tooltip": "§5Mit der Lebensenergie des Splitter kannst du eine gefallene Person wiederbeleben",
   "tooltip.soulspirit.soul_jam.tooltip": "§5Eine schwächere Version des Seelentotems, die dir 1 Leben wiederherstellt",

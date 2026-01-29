@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "soulspire:item/soul_token"
+    "model": "soulspire:item/soul_fragment"
   }
 }

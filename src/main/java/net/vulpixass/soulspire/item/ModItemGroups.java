@@ -20,7 +20,7 @@ public class ModItemGroups {
                         .displayName(Text.translatable("itemgroup.soulspire.soulspire_main_items"))
                         .entries((displayContext, entries) -> {
                             entries.add(ModItems.SOUL_AMULET);
-                            entries.add(ModItems.SOUL_TOKEN);
+                            entries.add(ModItems.SOUL_FRAGMENT);
                             entries.add(ModItems.SOUL_SHARD);
                             entries.add(ModItems.SOUL_JAM);
                             entries.add(ModItems.SOUL_TOTEM);
