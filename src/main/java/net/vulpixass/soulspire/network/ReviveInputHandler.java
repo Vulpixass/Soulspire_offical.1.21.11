@@ -1,6 +1,7 @@
 package net.vulpixass.soulspire.network;
 
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
 import net.minecraft.entity.SpawnReason;
@@ -46,6 +47,9 @@ public class ReviveInputHandler {
         }
 
         LivesStore.get().revive(targetId, typedName, sender);
+        int updated = LivesStore.get().outputLives(targetId);
+        ServerPlayNetworking.send(target, new SoulDataS2CPayload(updated));
+
         for (ServerPlayerEntity p : sender.getEntityWorld().getServer().getPlayerManager().getPlayerList()) {p.getEntityWorld().playSound(null, p.getX(), p.getY(), p.getZ(), SoundEvents.ENTITY_WITHER_SPAWN, SoundCategory.HOSTILE, 1.0f, 1.0f);}
         ServerWorld world = target.getEntityWorld();
         LightningEntity lightning = EntityType.LIGHTNING_BOLT.create(world, SpawnReason.TRIGGERED);
