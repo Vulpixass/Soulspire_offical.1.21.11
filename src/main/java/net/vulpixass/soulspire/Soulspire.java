@@ -2,6 +2,7 @@ package net.vulpixass.soulspire;
 
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
@@ -47,7 +48,18 @@ public class Soulspire implements ModInitializer {
 		LivesStore.INSTANCE.register();
 		ReviveSequenceManager.init();
 		BanSequenceManager.init();
-
+		int[] timer = {4000};
+		ServerTickEvents.END_SERVER_TICK.register(server -> {
+			timer[0]--;
+			for(ServerPlayerEntity player : PlayerLookup.all(server)) {
+				double currentHeight = player.getY();
+				ItemStack easter_egg_totem = new ItemStack(ModItems.EASTER_EGG_TOTEM, 1);
+				if(timer[0] == 0 && currentHeight >= 2000 && !player.getInventory().contains(easter_egg_totem) && !player.currentScreenHandler.getCursorStack().isOf(ModItems.EASTER_EGG_TOTEM)) {
+					player.giveOrDropStack(easter_egg_totem);
+					timer[0] = 4000;
+				}
+			}
+		});
 		ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
 			var source = oldPlayer.getRecentDamageSource();
 			if (source != null && source.isOf(DamageTypes.OUT_OF_WORLD)) {ReviveInputHandler.voidDeaths.add(oldPlayer.getUuid());}
