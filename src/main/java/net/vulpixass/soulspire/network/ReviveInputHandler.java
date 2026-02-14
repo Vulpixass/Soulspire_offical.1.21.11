@@ -11,7 +11,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.vulpixass.soulspire.item.ModItems;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -46,7 +45,7 @@ public class ReviveInputHandler {
             sender.sendMessage(Text.literal("§5That player is not dead."), false);
             return;
         }
-
+        if(!LivesStore.get().playerLives.get(targetId).hasUsedRevive) {ReviveSequenceManager.start(target);}
         LivesStore.get().revive(targetId, typedName, sender);
         LivesStore.get().updatePlayerDisplayName(target);
         target.getEntityWorld().getServer().getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, target));

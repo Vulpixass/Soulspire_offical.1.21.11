@@ -13,7 +13,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.world.GameMode;
 import net.vulpixass.soulspire.config.LivesConfig;
 import net.vulpixass.soulspire.item.ModItems;
-import org.apache.logging.log4j.core.jmx.Server;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -80,19 +79,19 @@ public class LivesStore{
     }
     public void addLife(UUID uuid) {
         PlayerSoulData data = playerLives.get(uuid);
-        if (data == null) return; // ADDED
+        if (data == null) return;
         data.lives++;
         LivesConfig.save(playerLives);
     }
     public void removeLife(UUID uuid) {
         PlayerSoulData data = playerLives.get(uuid);
-        if (data == null) return; // ADDED
+        if (data == null) return;
         data.lives--;
         LivesConfig.save(playerLives);
     }
     public void revive(UUID uuid, String typedName, PlayerEntity sender) {
         PlayerSoulData data = playerLives.get(uuid);
-        if (data == null) return; // ADDED
+        if (data == null) return;
         if (!data.hasUsedRevive && !data.hasCatalyst) {
             data.lives = 3;
             LivesConfig.save(playerLives);
@@ -103,7 +102,7 @@ public class LivesStore{
             data.lives = 3;
             data.hasUsedRevive = true;
             LivesConfig.save(playerLives);
-            sender.getEntityWorld().getServer().getPlayerManager().broadcast(Text.literal("§5§kkhj§5" + typedName + " has risen from the Dead§kkhj"), false);
+            sender.getEntityWorld().getServer().getPlayerManager().broadcast(Text.literal("§5§kkhj§5" + typedName + " has risen from the Dead but forever scarred§kkhj"), false);
             if (sender.getMainHandStack().getItem() == ModItems.SOUL_TOTEM) {sender.getMainHandStack().decrement(1);}
             else if (sender.getOffHandStack().getItem() == ModItems.SOUL_TOTEM) {sender.getOffHandStack().decrement(1);}
         } else {
@@ -117,7 +116,7 @@ public class LivesStore{
     }
     public boolean outputHasCatalyst(UUID uuid) {return playerLives.get(uuid).hasCatalyst;}
     public void sacrificeSoul(UUID uuid) {
-        if (!playerLives.containsKey(uuid)) return; // ADDED
+        if (!playerLives.containsKey(uuid)) return;
         playerLives.get(uuid).hasCatalyst = true;
         LivesConfig.save(playerLives);
     }

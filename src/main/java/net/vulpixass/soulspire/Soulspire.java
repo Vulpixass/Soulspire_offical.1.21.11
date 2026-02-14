@@ -3,7 +3,10 @@ package net.vulpixass.soulspire;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.vulpixass.soulspire.network.CombatTracker;
+import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.scoreboard.Team;
+import net.minecraft.util.Formatting;
+import net.vulpixass.soulspire.network.*;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
@@ -21,10 +24,6 @@ import net.vulpixass.soulspire.command.LivesCommands;
 import net.vulpixass.soulspire.config.LivesConfig;
 import net.vulpixass.soulspire.item.ModItemGroups;
 import net.vulpixass.soulspire.item.ModItems;
-import net.vulpixass.soulspire.network.LivesStore;
-import net.vulpixass.soulspire.network.ReviveInputHandler;
-import net.vulpixass.soulspire.network.SoulDataC2SPayload;
-import net.vulpixass.soulspire.network.SoulDataS2CPayload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +45,8 @@ public class Soulspire implements ModInitializer {
 		ModItemGroups.registerItemGroups();
 		CombatTracker.register();
 		LivesStore.INSTANCE.register();
+		ReviveSequenceManager.init();
+		BanSequenceManager.init();
 
 		ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
 			var source = oldPlayer.getRecentDamageSource();

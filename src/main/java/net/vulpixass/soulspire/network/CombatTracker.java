@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
@@ -18,16 +19,14 @@ import java.util.Map;
 import java.util.UUID;
 
 public class CombatTracker {
-
-    // victim UUID -> combat data
     private static final Map<UUID, PlayerEntityData> COMBAT = new HashMap<>();
 
     // how long a player stays "in combat" after being hit (in ticks)
     private static final int COMBAT_TICKS = 200; // 10 seconds
+    private static final int COMBAT_BAN_TICKS = 10; // 0.5 seconds
 
     public static void register() {
 
-        // 1. When a player is damaged by another player, start/reset their combat timer
         ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
             if (!(entity instanceof ServerPlayerEntity victim)) return true;
 
@@ -35,32 +34,37 @@ public class CombatTracker {
             if (!(attackerEntity instanceof ServerPlayerEntity attacker)) return true;
 
             if (attacker.getUuid().equals(victim.getUuid())) return true; // ignore self-damage
-
-            COMBAT.put(victim.getUuid(), new PlayerEntityData(COMBAT_TICKS, attacker));
-            return true; // allow damage
+            int ban_timer;
+            boolean lethal = false;
+            if (attacker.getMainHandStack().isOf(ModItems.SOUL_AMULET) || attacker.getOffHandStack().isOf(ModItems.SOUL_AMULET)) {ban_timer = 10;}
+            else {ban_timer = 0;}
+            float newHealth = victim.getHealth() - amount;
+            if(newHealth <= 0.5f && ban_timer == 10 && !(victim.getMainHandStack().isOf(Items.TOTEM_OF_UNDYING) || victim.getOffHandStack().isOf(Items.TOTEM_OF_UNDYING))) {lethal = true;}
+            COMBAT.put(victim.getUuid(), new PlayerEntityData(COMBAT_TICKS, attacker, victim, ban_timer, lethal));
+            if(newHealth <= 0.5f && ban_timer == 10 && !(victim.getMainHandStack().isOf(Items.TOTEM_OF_UNDYING) || victim.getOffHandStack().isOf(Items.TOTEM_OF_UNDYING))) {return false;}
+            return true;
         });
-
-        // 2. Tick down all combat timers once per server tick
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             Iterator<Map.Entry<UUID, PlayerEntityData>> it = COMBAT.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry<UUID, PlayerEntityData> entry = it.next();
                 PlayerEntityData data = entry.getValue();
                 data.timer--;
-                if (data.timer <= 0) {
+                if (data.timer <= 0) {it.remove();}
+                data.ban_timer--;
+                if (data.ban_timer >= 1 && data.lethal) {
                     it.remove();
-                }
+                    BanSequenceManager.start(data.victim, data.attacker);
+                } else if (data.ban_timer == 0) {it.remove();}
             }
         });
-        // 3. When a player dies, check if they were in combat recently
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, damageSource) -> {
             if (!(entity instanceof ServerPlayerEntity victim)) return;
 
             UUID id = victim.getUuid();
-            PlayerEntityData data = COMBAT.remove(id); // also clears combat state
+            PlayerEntityData data = COMBAT.remove(id);
 
             if (data != null) {
-                // victim died while in combat -> treat as PvP death
                 LivesStore.get().removeLife(id);
                 LivesStore.get().updatePlayerDisplayName(victim);
                 victim.getEntityWorld().getServer().getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_DISPLAY_NAME, victim));
