@@ -72,6 +72,7 @@ public class Soulspire implements ModInitializer {
 		});
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
 			ServerPlayerEntity player = handler.getPlayer();
+			if(!LivesStore.get().playerLives.containsKey(player.getUuid())) {LivesStore.get().playerLives.put(player.getUuid(), new PlayerSoulData(3));}
 			LivesStore.get().updatePlayerDisplayName(player);
 		});
 	}

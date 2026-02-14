@@ -112,6 +112,7 @@ public class LivesStore{
 
     }
     public int outputLives(UUID uuid) {
+        if(!LivesStore.get().playerLives.containsKey(uuid)) {LivesStore.get().playerLives.put(uuid, new PlayerSoulData(3));}
         return playerLives.get(uuid).lives;
     }
     public boolean outputHasCatalyst(UUID uuid) {return playerLives.get(uuid).hasCatalyst;}
@@ -122,6 +123,7 @@ public class LivesStore{
     }
     public void updatePlayerDisplayName(ServerPlayerEntity player) {
         Text name = player.getName();
+        if(!LivesStore.get().playerLives.containsKey(player.getUuid())) {LivesStore.get().playerLives.put(player.getUuid(), new PlayerSoulData(3));}
         int lives = LivesStore.get().outputLives(player.getUuid());
         Text formattedName = Text.of(name + "§5[" + lives + "]");
         player.setCustomName(formattedName);
