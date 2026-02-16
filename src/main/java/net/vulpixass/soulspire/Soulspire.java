@@ -7,6 +7,8 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.Formatting;
+import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import net.vulpixass.soulspire.network.*;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -28,6 +30,7 @@ import net.vulpixass.soulspire.item.ModItems;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.util.UUID;
 
 
@@ -66,7 +69,7 @@ public class Soulspire implements ModInitializer {
 		});
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
 			UUID id = newPlayer.getUuid();
-			if (ReviveInputHandler.voidDeaths.contains(id) && !LivesStore.get().playerLives.get(oldPlayer.getUuid()).hasCatalyst) {
+			if (ReviveInputHandler.voidDeaths.contains(id) && !LivesStore.get().playerLives.get(oldPlayer.getUuid()).hasCatalyst && oldPlayer.getEntityWorld().getRegistryKey() != World.END) {
 				ReviveInputHandler.voidDeaths.remove(id);
 				newPlayer.getInventory().insertStack(new ItemStack(ModItems.SOUL_CATALYST));
 				newPlayer.sendMessage(Text.literal("§5Your sacrifice has been acknowledged."), false);
