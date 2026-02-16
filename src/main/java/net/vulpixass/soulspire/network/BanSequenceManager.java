@@ -1,6 +1,7 @@
 package net.vulpixass.soulspire.network;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.entity.Entity;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -24,7 +25,7 @@ public class BanSequenceManager {
         });
     }
 
-    public static void start(ServerPlayerEntity victim, ServerPlayerEntity attacker) {
+    public static void start(Entity victim, Entity attacker) {
         if (active == null) {active = new BanSequence(victim, attacker);}
     }
 }

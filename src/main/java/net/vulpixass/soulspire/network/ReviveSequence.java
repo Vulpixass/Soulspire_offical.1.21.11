@@ -1,5 +1,6 @@
 package net.vulpixass.soulspire.network;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
 import net.minecraft.particle.DragonBreathParticleEffect;
@@ -11,7 +12,7 @@ import net.minecraft.sound.SoundEvents;
 
 public class ReviveSequence {
 
-    private final ServerPlayerEntity target;
+    private final Entity target;
 
     private int tick = 0;
     private double angle = 0;
@@ -24,7 +25,7 @@ public class ReviveSequence {
     private final double baseY;
     private final double baseZ;
 
-    public ReviveSequence(ServerPlayerEntity target) {
+    public ReviveSequence(Entity target) {
         this.target = target;
 
         this.baseX = target.getX();
@@ -37,7 +38,7 @@ public class ReviveSequence {
         target.setVelocity(0, 0, 0);
         target.setInvulnerable(true);
         tick++;
-        ServerWorld world = target.getEntityWorld().toServerWorld();
+        ServerWorld world = (ServerWorld) target.getEntityWorld();
 
         int particleCount = 60;
         if (tick <= 80) {
@@ -84,7 +85,7 @@ public class ReviveSequence {
             if (spiralY <= baseY) {
                 world.spawnParticles(ParticleTypes.END_ROD, baseX, baseY + 1, baseZ, 40, 0.5, 0.5, 0.5, 0.1);
                 world.playSound(null, baseX, baseY, baseZ, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.MASTER, 1.0f, 1.5f);
-                target.setHealth(target.getMaxHealth());
+                if(target instanceof ServerPlayerEntity playerTarget) {playerTarget.setHealth(playerTarget.getMaxHealth());}
                 target.setInvulnerable(false);
                 return true;
             }

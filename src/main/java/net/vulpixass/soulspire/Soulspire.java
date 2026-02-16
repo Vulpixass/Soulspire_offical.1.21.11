@@ -40,7 +40,6 @@ public class Soulspire implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
 			LivesCommands.register(dispatcher);
 		});
-
 		ModItems.registerModItems();
 		ReviveInputHandler.register();
 		ModItemGroups.registerItemGroups();
@@ -48,13 +47,14 @@ public class Soulspire implements ModInitializer {
 		LivesStore.INSTANCE.register();
 		ReviveSequenceManager.init();
 		BanSequenceManager.init();
+		GainingLifeSequenceManager.init();
 		int[] timer = {4000};
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			timer[0]--;
 			for(ServerPlayerEntity player : PlayerLookup.all(server)) {
 				double currentHeight = player.getY();
 				ItemStack easter_egg_totem = new ItemStack(ModItems.EASTER_EGG_TOTEM, 1);
-				if(timer[0] == 0 && currentHeight >= 2000 && !player.getInventory().contains(easter_egg_totem) && !player.currentScreenHandler.getCursorStack().isOf(ModItems.EASTER_EGG_TOTEM)) {
+				if(timer[0] <= 0 && currentHeight >= 2000 && !player.getInventory().contains(easter_egg_totem) && !player.currentScreenHandler.getCursorStack().isOf(ModItems.EASTER_EGG_TOTEM)) {
 					player.giveOrDropStack(easter_egg_totem);
 					timer[0] = 4000;
 				}
@@ -66,7 +66,7 @@ public class Soulspire implements ModInitializer {
 		});
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
 			UUID id = newPlayer.getUuid();
-			if (ReviveInputHandler.voidDeaths.contains(id) && LivesStore.get().playerLives.get(oldPlayer.getUuid()).hasCatalyst != true) {
+			if (ReviveInputHandler.voidDeaths.contains(id) && !LivesStore.get().playerLives.get(oldPlayer.getUuid()).hasCatalyst) {
 				ReviveInputHandler.voidDeaths.remove(id);
 				newPlayer.getInventory().insertStack(new ItemStack(ModItems.SOUL_CATALYST));
 				newPlayer.sendMessage(Text.literal("§5Your sacrifice has been acknowledged."), false);

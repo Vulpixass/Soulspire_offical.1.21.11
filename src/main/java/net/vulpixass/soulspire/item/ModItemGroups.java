@@ -22,7 +22,7 @@ public class ModItemGroups {
                             entries.add(ModItems.SOUL_AMULET);
                             entries.add(ModItems.SOUL_FRAGMENT);
                             entries.add(ModItems.SOUL_SHARD);
-                            entries.add(ModItems.SOUL_JAM);
+                            entries.add(ModItems.SOUL_ELIXIR);
                             entries.add(ModItems.SOUL_TOTEM);
                             entries.add(ModItems.SOUL_CATALYST);
                         }).build());

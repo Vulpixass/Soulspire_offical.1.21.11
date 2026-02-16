@@ -10,7 +10,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.vulpixass.soulspire.Soulspire;
-import net.vulpixass.soulspire.item.custom.SoulJamItem;
+import net.vulpixass.soulspire.item.custom.SoulElixirItem;
 import net.vulpixass.soulspire.item.custom.SoulTotemItem;
 
 public class ModItems {
@@ -19,7 +19,7 @@ public class ModItems {
     public static final Item SOUL_AMULET = register("soul_amulet", s -> new Item(s.maxCount(1)));
     public static final Item SOUL_CATALYST = register("soul_catalyst", s -> new Item(s.maxCount(1)));
     public static final Item SOUL_TOTEM = register("soul_totem", s -> new SoulTotemItem(s.maxCount(1)));
-    public static final Item SOUL_JAM = register("soul_jam", s -> new SoulJamItem(s.maxCount(1)));
+    public static final Item SOUL_ELIXIR = register("soul_elixir", s -> new SoulElixirItem(s.maxCount(1)));
     public static final Item EASTER_EGG_TOTEM = register("easter_egg_totem", s -> new Item(s.maxCount(1).rarity(Rarity.EPIC)));
 
     private static <T extends Item> T register(String name, java.util.function.Function<Item.Settings, T> factory) {
@@ -36,7 +36,7 @@ public class ModItems {
             fabricItemGroupEntries.add(SOUL_AMULET);
             fabricItemGroupEntries.add(SOUL_CATALYST);
             fabricItemGroupEntries.add(SOUL_TOTEM);
-            fabricItemGroupEntries.add(SOUL_JAM);
+            fabricItemGroupEntries.add(SOUL_ELIXIR);
         });
     }
 }

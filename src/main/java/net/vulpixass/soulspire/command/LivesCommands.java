@@ -6,14 +6,13 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.permission.Permissions;
+import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.vulpixass.soulspire.network.LivesStore;
-import net.vulpixass.soulspire.network.PlayerSoulData;
-import net.vulpixass.soulspire.network.SoulDataS2CPayload;
+import net.vulpixass.soulspire.network.*;
 
 public class LivesCommands {
 
@@ -111,5 +110,31 @@ public class LivesCommands {
                             return 1;
                         })
                 ));
+        dispatcher.register(CommandManager.literal("debug_ban")
+                .then(CommandManager.argument("entity", net.minecraft.command.argument.EntityArgumentType.entity())
+                .executes(ctx -> {
+                    ServerCommandSource source = ctx.getSource();
+                    var executor = source.getPlayer();
+                    if (executor == null || !source.getServer().getPlayerManager().isOperator(executor.getPlayerConfigEntry())) {
+                        source.sendError(Text.literal("§cYou must be an operator to use this command."));
+                        return 0;
+                    }
+                    Entity target = net.minecraft.command.argument.EntityArgumentType.getEntity(ctx, "entity");
+                    BanSequenceManager.start( target, target);
+                    return 1;
+                })));
+        dispatcher.register(CommandManager.literal("debug_revive")
+                .then(CommandManager.argument("entity", net.minecraft.command.argument.EntityArgumentType.entity())
+                .executes(ctx -> {
+                    ServerCommandSource source = ctx.getSource();
+                    var executor = source.getPlayer();
+                    if (executor == null || !source.getServer().getPlayerManager().isOperator(executor.getPlayerConfigEntry())) {
+                        source.sendError(Text.literal("§cYou must be an operator to use this command."));
+                        return 0;
+                    }
+                    Entity target = net.minecraft.command.argument.EntityArgumentType.getEntity(ctx, "entity");
+                    ReviveSequenceManager.start(target);
+                    return 1;
+                })));
     }
 }

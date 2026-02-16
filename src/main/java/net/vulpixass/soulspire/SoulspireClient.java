@@ -19,7 +19,7 @@ public class SoulspireClient implements ClientModInitializer {
             if (itemStack.isOf(ModItems.SOUL_FRAGMENT)){list.add(Text.translatable("tooltip.soulspirit.soul_fragment.tooltip"));}
             if (itemStack.isOf(ModItems.SOUL_SHARD)){list.add(Text.translatable("tooltip.soulspirit.soul_shard.tooltip"));}
             if (itemStack.isOf(ModItems.SOUL_TOTEM)){list.add(Text.translatable("tooltip.soulspirit.soul_totem.tooltip"));}
-            if (itemStack.isOf(ModItems.SOUL_JAM)){list.add(Text.translatable("tooltip.soulspirit.soul_jam.tooltip"));}
+            if (itemStack.isOf(ModItems.SOUL_ELIXIR)){list.add(Text.translatable("tooltip.soulspirit.soul_elixir.tooltip"));}
             if (itemStack.isOf(ModItems.SOUL_CATALYST)){list.add(Text.translatable("tooltip.soulspirit.soul_catalyst.tooltip"));}
         });
         SoulHudRenderer.register();

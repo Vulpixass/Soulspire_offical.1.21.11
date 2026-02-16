@@ -1,5 +1,8 @@
 package net.vulpixass.soulspire.network;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
 import net.minecraft.entity.TntEntity;
@@ -14,6 +17,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
 import net.vulpixass.soulspire.item.ModItems;
 
 import static java.lang.Math.cos;
@@ -23,34 +27,35 @@ public class BanSequence {
     private boolean didLightning = false;
     private boolean playSound = false;
     private int tick = 0;
-    private final ServerPlayerEntity victim;
-    private final ServerPlayerEntity attacker;
+    private final Entity victim;
+    private final Entity attacker;
     double[] angle = {0};
     double[] radius = {1.0};
     double Vx;
     double Vy;
     double Vz;
+    int finalRadius = 30;
 
 
-    public BanSequence(ServerPlayerEntity victim, ServerPlayerEntity attacker) {
+    public BanSequence(Entity victim, Entity attacker) {
         Vx = victim.getX();
         Vy = victim.getY();
         Vz = victim.getZ();
         Scoreboard scoreboard = victim.getEntityWorld().getServer().getScoreboard();
         Team team = scoreboard.getTeam("soul_glow");
-        scoreboard.addScoreHolderToTeam(victim.getGameProfile().name(), team);
+        if(victim instanceof ServerPlayerEntity playerVictim) {scoreboard.addScoreHolderToTeam(playerVictim.getGameProfile().name(), team);}
         victim.setGlowing(true);
-
         this.victim = victim;
         this.attacker = attacker;
     }
-
     public boolean tick() {
-        if (attacker.getMainHandStack().isOf(ModItems.SOUL_AMULET)) {attacker.getMainHandStack().decrement(1);
-        } else if (attacker.getOffHandStack().isOf(ModItems.SOUL_AMULET)) {attacker.getOffHandStack().decrement(1);}
+        if (attacker instanceof ServerPlayerEntity playerAttacker) {
+            if (playerAttacker.getMainHandStack().isOf(ModItems.SOUL_AMULET)) {playerAttacker.getMainHandStack().decrement(1);
+            } else if (playerAttacker.getOffHandStack().isOf(ModItems.SOUL_AMULET)) {playerAttacker.getOffHandStack().decrement(1);}
+        }
         tick++;
         int[] editableTimer = {200 - tick};
-        ServerWorld world = victim.getEntityWorld().toServerWorld();
+        ServerWorld world = (ServerWorld) victim.getEntityWorld();
         BannedPlayerList bannedPlayerList = world.getServer().getPlayerManager().getUserBanList();
         victim.setInvulnerable(true);
         victim.setPos(Vx, Vy, Vz);
@@ -65,9 +70,7 @@ public class BanSequence {
                 world.spawnParticles(DragonBreathParticleEffect.of(ParticleTypes.DRAGON_BREATH, 1.0f), x, y, z, 1, 0, 0, 0, 0.02);
                 if (playSound) {
                     world.playSound(null, Vx, Vy, Vz, SoundEvents.BLOCK_AMETHYST_BLOCK_RESONATE, SoundCategory.MASTER, 0.1f, 1.0f);
-                } else {
-                    playSound = !playSound;
-                }
+                } else {playSound = !playSound;}
             }
         }
         if(editableTimer[0] <= 169 && editableTimer[0] >= 110) {
@@ -78,9 +81,7 @@ public class BanSequence {
                         victim.getZ() + sin(angle[0])* radius[0], 1, 0, 0, 0, 0.02);
                 if(playSound) {
                     world.playSound(null, Vx, Vy, Vz, SoundEvents.ENTITY_PHANTOM_FLAP, SoundCategory.MASTER, 0.2f, 1.4f);
-                } else {
-                    playSound = !playSound;
-                }
+                } else {playSound = !playSound;}
             }
         }
         if(editableTimer[0] <= 109 && editableTimer[0] >= 5) {
@@ -90,9 +91,7 @@ public class BanSequence {
                 world.spawnParticles(DragonBreathParticleEffect.of(ParticleTypes.DRAGON_BREATH, 1.0f), victim.getX() + cos(angle[0])* radius[0], victim.getY(), victim.getZ() + sin(angle[0])* radius[0], 1, 0, 0, 0, 0.02);
                 if (playSound) {
                     world.playSound(null, Vx, Vy, Vz, SoundEvents.ENTITY_PHANTOM_FLAP, SoundCategory.MASTER, 0.2f, 1.4f);
-                } else {
-                    playSound = !playSound;
-                }
+                } else {playSound = !playSound;}
             }
             world.playSound(null, Vx, Vy, Vz, SoundEvents.BLOCK_BEACON_AMBIENT, SoundCategory.MASTER, 0.075f, 1, 1);
         }
@@ -110,16 +109,48 @@ public class BanSequence {
             victim.setGlowing(false);
             Scoreboard scoreboard = world.getServer().getScoreboard();
             Team team = scoreboard.getTeam("soul_glow");
-            if (team != null) {scoreboard.removeScoreHolderFromTeam(victim.getGameProfile().name(), team);}
-            for (int i = 0; i < 150; i++) {
+            if(victim instanceof ServerPlayerEntity playerVictim) {if (team != null) {scoreboard.removeScoreHolderFromTeam(playerVictim.getGameProfile().name(), team);}}
+
+            BlockPos center = victim.getBlockPos();
+            for (int x = -finalRadius; x <= finalRadius; x++) {
+                for (int y = -finalRadius; y <= finalRadius; y++) {
+                    for (int z = -finalRadius; z <= finalRadius; z++) {
+                        if (x*x + y*y + z*z <= finalRadius*finalRadius) {
+                            BlockPos pos = center.add(x, y, z);
+                            world.setBlockState(pos, Blocks.AIR.getDefaultState(), 3);
+                        }
+                    }
+                }
+            }
+            for (int x = -finalRadius; x <= finalRadius; x++) {
+                for (int y = -finalRadius; y <= finalRadius; y++) {
+                    for (int z = -finalRadius; z <= finalRadius; z++) {
+                        if (x*x + y*y + z*z <= finalRadius*finalRadius) {
+                            BlockPos pos = center.add(x, y, z);
+                            BlockPos below = pos.down();
+                            if (!world.getBlockState(below).isAir()) {
+                                if (world.getRandom().nextFloat() < 0.0725f) {
+                                    world.setBlockState(below, Blocks.NETHERRACK.getDefaultState(), 3);
+                                    BlockPos firePos = below.up();
+                                    if (world.getBlockState(firePos).isAir()) {world.setBlockState(firePos, Blocks.FIRE.getDefaultState(), 3);}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            for (int i = 0; i < 20; i++) {
                 TntEntity tntEntity = new TntEntity(EntityType.TNT, world);
                 tntEntity.setPosition(Vx, Vy - i - 2, Vz);
                 tntEntity.setFuse(i+1);
+                tntEntity.setInvisible(true);
                 world.spawnEntity(tntEntity);
             }
-            bannedPlayerList.add(new BannedPlayerEntry(victim.getPlayerConfigEntry(), null, "Soul Amulet", null, "Your Soul got Overloaded"));
-            victim.getEntityWorld().getServer().getPlayerManager().broadcast(Text.literal("§5§kkhj§5" + victim.getGameProfile().name() + "'s soul couldn't handle the Overload §kkhj"), false);
-            victim.networkHandler.disconnect(Text.literal("§5§kkhj§5Your Soul got Overloaded§kkhj"));
+            if(victim instanceof ServerPlayerEntity playerVictim) {
+                bannedPlayerList.add(new BannedPlayerEntry(playerVictim.getPlayerConfigEntry(), null, "Soul Amulet", null, "Your Soul got Overloaded"));
+                playerVictim.getEntityWorld().getServer().getPlayerManager().broadcast(Text.literal("§5§kkhj§5" + playerVictim.getGameProfile().name() + "'s soul couldn't handle the Overload §kkhj"), false);
+                playerVictim.networkHandler.disconnect(Text.literal("§5§kkhj§5Your Soul got Overloaded§kkhj"));
+            }
             return true;
         }
         return false;

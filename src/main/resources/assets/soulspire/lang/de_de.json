@@ -2,7 +2,7 @@
   "item.soulspire.soul_fragment": "Seelenfragment",
   "item.soulspire.soul_shard": "Seelensplitter",
   "item.soulspire.soul_totem": "Seelentotem",
-  "item.soulspire.soul_jam": "Seelensaft",
+  "item.soulspire.soul_elixir": "Seelenelixir",
   "item.soulspire.soul_catalyst": "Seelenkatalysator",
   "item.soulspire.soul_amulet": "Seelenamulett",
   "item.soulspire.easter_egg_totem": "Totem des Finales",
@@ -13,6 +13,6 @@
   "tooltip.soulspirit.soul_fragment.tooltip": "§5Ein seltsames Fragment, erhalten durch das töten eines Spielers mit deinen eigenen Händen",
   "tooltip.soulspirit.soul_shard.tooltip": "§5Ein leuchtender Splitter, der mit Lebensenergie pulsiert",
   "tooltip.soulspirit.soul_totem.tooltip": "§5Mit der Lebensenergie des Splitter kannst du eine gefallene Person wiederbeleben",
-  "tooltip.soulspirit.soul_jam.tooltip": "§5Eine schwächere Version des Seelentotems, die dir 1 Leben wiederherstellt",
+  "tooltip.soulspirit.soul_elixir.tooltip": "§5Eine schwächere Version des Seelentotems, die dir 1 Leben wiederherstellt",
   "tooltip.soulspirit.soul_catalyst.tooltip": "§5§kkhj§5Ein mächtiges Artefakt, erfüllt von negativer Energie§kkhj"
 }

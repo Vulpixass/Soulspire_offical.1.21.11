@@ -12,13 +12,14 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import net.vulpixass.soulspire.item.ModItems;
+import net.vulpixass.soulspire.network.GainingLifeSequenceManager;
 import net.vulpixass.soulspire.network.LivesStore;
 import net.vulpixass.soulspire.network.SoulDataS2CPayload;
 
 import java.util.UUID;
 
-public class SoulJamItem extends Item {
-    public SoulJamItem(Settings settings) {
+public class SoulElixirItem extends Item {
+    public SoulElixirItem(Settings settings) {
         super(settings);
     }
     @Override
@@ -36,8 +37,9 @@ public class SoulJamItem extends Item {
                 user.getEntityWorld().playSound(null, user.getX(), user.getY(), user.getZ(), SoundEvents.ENTITY_WARDEN_HEARTBEAT, SoundCategory.HOSTILE, 1.0f, 1.0f);
                 int updated = LivesStore.get().outputLives(user.getUuid());
                 ServerPlayNetworking.send((ServerPlayerEntity) user, new SoulDataS2CPayload(updated));
-                if (user.getMainHandStack().getItem() == ModItems.SOUL_JAM) {user.getMainHandStack().decrement(1);}
-                else if (user.getOffHandStack().getItem() == ModItems.SOUL_JAM) {user.getOffHandStack().decrement(1);}
+                if (user.getMainHandStack().getItem() == ModItems.SOUL_ELIXIR) {user.getMainHandStack().decrement(1);}
+                else if (user.getOffHandStack().getItem() == ModItems.SOUL_ELIXIR) {user.getOffHandStack().decrement(1);}
+                GainingLifeSequenceManager.start((ServerPlayerEntity) user);
                 return ActionResult.SUCCESS;
             } else {
                 System.out.println("Adding 1 Life to: " + user.getName() + " failed, target already has 3 lives or has the Soul Catalyst crafted");
