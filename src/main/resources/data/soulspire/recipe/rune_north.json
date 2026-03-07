@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "soulspire:chiseled_polished_faceless_blackstone",
+  "result": {
+    "id": "soulspire:rune_north",
+    "count": 1
+  }
+}

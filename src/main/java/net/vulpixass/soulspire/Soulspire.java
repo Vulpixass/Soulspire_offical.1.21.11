@@ -9,6 +9,7 @@ import net.minecraft.scoreboard.Team;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
+import net.vulpixass.soulspire.block.ModBlocks;
 import net.vulpixass.soulspire.network.*;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -44,6 +45,7 @@ public class Soulspire implements ModInitializer {
 			LivesCommands.register(dispatcher);
 		});
 		ModItems.registerModItems();
+		ModBlocks.registerModBlocks();
 		ReviveInputHandler.register();
 		ModItemGroups.registerItemGroups();
 		CombatTracker.register();

@@ -1,0 +1,62 @@
+package net.vulpixass.soulspire.block.custom;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
+import net.vulpixass.soulspire.item.ModItems;
+
+public class RitualAltarBlock extends Block {
+    private static final VoxelShape SHAPE = Block.createCuboidShape(2, 0, 2, 14, 25, 14);
+
+    public RitualAltarBlock(Settings settings) {super(settings);}
+
+    @Override
+    protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        if (!world.isClient()) {
+            activateDust((ServerWorld) world, pos);
+            world.playSound(null, pos, SoundEvents.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.MASTER);
+        }
+        return ActionResult.SUCCESS;
+    }
+
+    @Override
+    public void onSteppedOn(World world, BlockPos pos, BlockState state, Entity entity) {
+        if(entity instanceof ItemEntity itemEntity) {
+            if((itemEntity.getStack().getItem() == ModItems.SOUL_TOTEM)) {
+                world.playSound(entity, pos, SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE, SoundCategory.BLOCKS, 1f, 1f);
+                PlayerEntity nearestPlayer = world.getClosestPlayer(pos.getX(), pos.getY(), pos.getZ(), 5.0, true);
+            }
+        }
+        super.onSteppedOn(world, pos, state, entity);
+    }
+
+    private void activateDust(ServerWorld world, BlockPos altarPos) {
+        int radius = 1;
+        BlockPos.iterateOutwards(altarPos, radius, radius, radius).forEach(pos -> {
+            BlockState state = world.getBlockState(pos);
+            if (state.getBlock() instanceof SoulPowderDustBlock dust) {
+                dust.energize(world, pos);
+            }
+        });
+    }
+    @Override
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return SHAPE;
+    }
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return SHAPE;
+    }
+}

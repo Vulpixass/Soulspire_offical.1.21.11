@@ -7,7 +7,15 @@
   "item.soulspire.soul_amulet": "Soul Amulet",
   "item.soulspire.easter_egg_totem": "Totem of Finale",
 
-  "itemgroup.soulspire.soulspire_main_items": "Soulspire",
+  "item.soulspire.ritual_altar": "Ritual Altar",
+  "item.soulspire.rune_east": "Rune East",
+  "item.soulspire.rune_north": "Rune North",
+  "item.soulspire.rune_south": "Rune South",
+  "item.soulspire.rune_west": "Rune West",
+  "item.soulspire.chiseled_polished_faceless_blackstone": "Chiseled Polished Faceless Blackstone",
+
+  "itemgroup.soulspire.soulspire_main_items": "Soulspire Items",
+  "itemgroup.soulspire.soulspire_main_blocks": "Soulspire Blocks",
 
   "tooltip.soulspirit.soul_amulet.tooltip": "§5§kkhj§5Permanently BAN any Player§kkhj",
   "tooltip.soulspirit.soul_fragment.tooltip": "§5A strange Fragment gained through the death of a player by your hands",

@@ -7,7 +7,14 @@
   "item.soulspire.soul_amulet": "Seelenamulett",
   "item.soulspire.easter_egg_totem": "Totem des Finales",
 
-  "itemgroup.soulspire.soulspire_main_items": "Soulspire",
+  "item.soulspire.ritual_altar": "Ritual Altar",
+  "item.soulspire.rune_east": "Rune Ost",
+  "item.soulspire.rune_north": "Rune Nord",
+  "item.soulspire.rune_south": "Rune Süd",
+  "item.soulspire.rune_west": "Rune West",
+
+  "itemgroup.soulspire.soulspire_main_items": "Soulspire Items",
+  "itemgroup.soulspire.soulspire_main_blocks": "Soulspire Blöcke",
 
   "tooltip.soulspirit.soul_amulet.tooltip": "§5§kkhj§5Verbanne einen Spieler PERMANENT§kkhj",
   "tooltip.soulspirit.soul_fragment.tooltip": "§5Ein seltsames Fragment, erhalten durch das töten eines Spielers mit deinen eigenen Händen",

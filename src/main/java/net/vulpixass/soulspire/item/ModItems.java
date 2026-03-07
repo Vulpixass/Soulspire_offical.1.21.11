@@ -11,10 +11,11 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.vulpixass.soulspire.Soulspire;
 import net.vulpixass.soulspire.item.custom.SoulElixirItem;
+import net.vulpixass.soulspire.item.custom.SoulFragmentItem;
 import net.vulpixass.soulspire.item.custom.SoulTotemItem;
 
 public class ModItems {
-    public static final Item SOUL_FRAGMENT = register("soul_fragment", s -> new Item(s.fireproof()));
+    public static final Item SOUL_FRAGMENT = register("soul_fragment", s -> new SoulFragmentItem(s.fireproof()));
     public static final Item SOUL_SHARD = register("soul_shard", s -> new Item(s.maxCount(16).fireproof()));
     public static final Item SOUL_AMULET = register("soul_amulet", s -> new Item(s.maxCount(1)));
     public static final Item SOUL_CATALYST = register("soul_catalyst", s -> new Item(s.maxCount(1)));

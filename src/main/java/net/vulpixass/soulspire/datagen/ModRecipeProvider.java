@@ -2,6 +2,7 @@ package net.vulpixass.soulspire.datagen;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.minecraft.block.Blocks;
 import net.minecraft.data.recipe.RecipeExporter;
 import net.minecraft.data.recipe.RecipeGenerator;
 import net.minecraft.item.Item;
@@ -10,6 +11,7 @@ import net.minecraft.item.Items;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
+import net.vulpixass.soulspire.block.ModBlocks;
 import net.vulpixass.soulspire.item.ModItems;
 
 import java.util.List;
@@ -52,15 +54,9 @@ public class ModRecipeProvider extends FabricRecipeProvider {
             public void generate() {
                 RegistryWrapper.Impl<Item> itemLookup = registries.getOrThrow(RegistryKeys.ITEM);
 
-                shapedRecipe(exporter, RecipeCategory.MISC, ModItems.SOUL_SHARD, 1, new String[]{"  T", " T ", "T  "},
-                        java.util.Map.of('T', ModItems.SOUL_FRAGMENT));
-                shapedRecipe(exporter, RecipeCategory.COMBAT, ModItems.SOUL_TOTEM, 1, new String[]{"ASA", "RTR", "ADA"},
-                        java.util.Map.of('S', ModItems.SOUL_SHARD, 'T', Items.TOTEM_OF_UNDYING, 'A', Items.ANCIENT_DEBRIS, 'R', Items.REDSTONE_BLOCK, 'D' ,Items.DIAMOND_BLOCK));
-                shapedRecipe(exporter, RecipeCategory.COMBAT, ModItems.SOUL_ELIXIR, 1, new String[]{" T ", "DXD", " R "},
-                        java.util.Map.of('T', ModItems.SOUL_FRAGMENT, 'D', Items.DIAMOND_BLOCK, 'X', Items.EXPERIENCE_BOTTLE, 'R', Items.REDSTONE));
-                shapedRecipe(exporter, RecipeCategory.COMBAT, ModItems.SOUL_AMULET, 1, new String[]{"ESE", "NCN", "EWE"},
-                        java.util.Map.of('S', ModItems.SOUL_SHARD, 'C', ModItems.SOUL_CATALYST, 'N', Items.NETHERITE_INGOT, 'W', Items.WITHER_SKELETON_SKULL, 'E', Items.ELYTRA));
-            }
+                shapedRecipe(exporter, RecipeCategory.MISC, ModBlocks.CHISELED_POLISHED_FACELESS_BLACKSTONE, 2, new String[]{"P", "P"},
+                        java.util.Map.of('P', Blocks.POLISHED_BLACKSTONE));
+                }
         };
     }
 

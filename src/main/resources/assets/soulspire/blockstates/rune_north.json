@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "activated=false": {
+      "model": "soulspire:block/runes_inactive/rune_north_inactive"
+    },
+    "activated=true": {
+      "model": "soulspire:block/runes_active/rune_north_active"
+    }
+  }
+}

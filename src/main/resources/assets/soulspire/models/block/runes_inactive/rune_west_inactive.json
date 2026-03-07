@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "soulspire:block/runes_inactive/rune_west_inactive"
+  }
+}
