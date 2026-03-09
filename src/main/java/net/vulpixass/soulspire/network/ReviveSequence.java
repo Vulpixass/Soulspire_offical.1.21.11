@@ -9,10 +9,14 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.vulpixass.soulspire.block.ModBlocks;
 
 public class ReviveSequence {
 
     private final Entity target;
+    private final BlockPos pos;
 
     private int tick = 0;
     private double angle = 0;
@@ -25,15 +29,17 @@ public class ReviveSequence {
     private final double baseY;
     private final double baseZ;
 
-    public ReviveSequence(Entity target) {
+    public ReviveSequence(Entity target, BlockPos blockPos) {
         this.target = target;
+        this.pos = blockPos;
 
-        this.baseX = target.getX();
-        this.baseY = target.getY();
-        this.baseZ = target.getZ();
+        this.baseX = pos.getX();
+        this.baseY = pos.getY() + 5;
+        this.baseZ = pos.getZ();
     }
 
     public boolean tick() {
+        int k = 0;
         target.setPos(baseX, baseY, baseZ);
         target.setVelocity(0, 0, 0);
         target.setInvulnerable(true);
@@ -93,4 +99,11 @@ public class ReviveSequence {
 
         return false;
     }
+
+    private static final BlockPos[] getRunes = new BlockPos[]{
+            new BlockPos(6, 1, 0), //north
+            new BlockPos(-6, 1, 0), //south
+            new BlockPos(0, 1, 6), //east
+            new BlockPos(0, 1, -6) //west
+    };
 }
