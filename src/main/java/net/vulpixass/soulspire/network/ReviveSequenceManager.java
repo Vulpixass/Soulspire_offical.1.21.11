@@ -1,7 +1,7 @@
 package net.vulpixass.soulspire.network;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.entity.Entity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 
 public class ReviveSequenceManager {
@@ -16,7 +16,7 @@ public class ReviveSequenceManager {
         });
     }
 
-    public static void start(Entity target, BlockPos blockPos) {
-        if (active == null) {active = new ReviveSequence(target, blockPos);}
+    public static void start(ServerPlayerEntity target, BlockPos blockPos, String typedName, ServerPlayerEntity sender) {
+        if (active == null) {active = new ReviveSequence(target, blockPos, typedName, sender);}
     }
 }

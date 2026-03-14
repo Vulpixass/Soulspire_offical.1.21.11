@@ -40,7 +40,7 @@ public class RitualAltarBlock extends Block {
         return ActionResult.SUCCESS;
     }
 
-    private void activateDust(ServerWorld world, BlockPos altarPos) {
+    public static void activateDust(ServerWorld world, BlockPos altarPos) {
         int radius = 1;
         BlockPos.iterateOutwards(altarPos, radius, radius, radius).forEach(pos -> {
             BlockState state = world.getBlockState(pos);

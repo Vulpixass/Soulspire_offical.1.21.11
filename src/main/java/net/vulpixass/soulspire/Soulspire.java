@@ -2,6 +2,7 @@ package net.vulpixass.soulspire;
 
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.scoreboard.Scoreboard;
@@ -31,13 +32,13 @@ import net.vulpixass.soulspire.item.ModItems;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
 import java.util.UUID;
 
 
 public class Soulspire implements ModInitializer {
 	public static final String MOD_ID = "soulspire";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	public static boolean RitualRetaliates = true;
 
 	@Override
 	public void onInitialize() {

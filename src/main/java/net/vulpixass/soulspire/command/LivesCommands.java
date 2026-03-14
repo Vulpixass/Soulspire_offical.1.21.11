@@ -10,9 +10,8 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.vulpixass.soulspire.Soulspire;
 import net.vulpixass.soulspire.network.*;
-
-import static net.vulpixass.soulspire.network.LivesStore.awaitingReviveInput;
 
 public class LivesCommands {
 
@@ -123,5 +122,18 @@ public class LivesCommands {
                     BanSequenceManager.start( target, target);
                     return 1;
                 })));
+        dispatcher.register(CommandManager.literal("ritualRetaliates")
+                .executes(ctx -> {
+                    ServerCommandSource source = ctx.getSource();
+                    var executor = source.getPlayer();
+                    if (executor == null || !source.getServer().getPlayerManager().isOperator(executor.getPlayerConfigEntry())) {
+                        source.sendError(Text.literal("§cYou must be an operator to use this command."));
+                        return 0;
+                    }
+                    Soulspire.RitualRetaliates = !Soulspire.RitualRetaliates;
+                    if (Soulspire.RitualRetaliates) {source.sendFeedback(() -> Text.literal("The Revive Ritual can now retaliate"), true);}
+                    else {source.sendFeedback(() -> Text.literal("The Revive Ritual can no longer retaliate"), true);}
+                    return 1;
+                }));
     }
 }

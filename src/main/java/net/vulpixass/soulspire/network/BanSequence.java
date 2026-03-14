@@ -57,7 +57,9 @@ public class BanSequence {
         int[] editableTimer = {200 - tick};
         ServerWorld world = (ServerWorld) victim.getEntityWorld();
         BannedPlayerList bannedPlayerList = world.getServer().getPlayerManager().getUserBanList();
+        victim.setFrozenTicks(200);
         victim.setInvulnerable(true);
+        victim.setNoGravity(true);
         victim.setPos(Vx, Vy, Vz);
         victim.setVelocity(0, 0, 0);
         int particleCount = 60;
